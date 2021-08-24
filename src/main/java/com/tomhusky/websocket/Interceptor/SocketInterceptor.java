@@ -3,8 +3,6 @@ package com.tomhusky.websocket.Interceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
@@ -18,7 +16,6 @@ import java.util.Map;
  * @description: 在Websocket连接建立阶段（此时还是HTTP协议）拦截HTTP请求，获取到HttpSesion并保存。 webSocket握手拦截器 可用于验证登录
  */
 @Slf4j
-@Component
 public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
 
     /**
@@ -35,8 +32,7 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) throws Exception {
         //TODO 获取token 校验
-
-
+        log.debug("准备握手!");
         return true;
     }
 

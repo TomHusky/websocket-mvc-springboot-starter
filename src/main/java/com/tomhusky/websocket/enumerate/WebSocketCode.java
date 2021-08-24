@@ -1,8 +1,5 @@
 package com.tomhusky.websocket.enumerate;
 
-import com.tomhusky.websocket.bean.SocketResult;
-import com.tomhusky.websocket.util.FastJsonUtils;
-
 /**
  * @Author: lwj
  * @Package: com.fzfyit.aliyun.iot.flowerpot.enumerate
@@ -16,20 +13,8 @@ public class WebSocketCode {
 
     }
 
-    public static String connectSuccess() {
-        SocketResult<Object> result = new SocketResult<>().setCode(8888).setMessage("连接成功");
-        return FastJsonUtils.toString(result);
-    }
+    public static final Integer RESULT_SUCCESS = 0;
 
-    public static SocketResult connectMvcSuccess() {
-        return new SocketResult().setMessage("初始化WebSocketMVC成功").setCode(9999);
-    }
+    public static final Integer RESULT_ERROR = -1;
 
-    public static SocketResult sendMsgSuccess() {
-        return new SocketResult().setMessage("消息发送成功").setCode(10000);
-    }
-
-    public static SocketResult sendMsgFail(String msg) {
-        return new SocketResult().setMessage(msg).setCode(100001);
-    }
 }

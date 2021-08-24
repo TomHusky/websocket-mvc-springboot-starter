@@ -9,6 +9,7 @@ import com.tomhusky.websocket.util.ClassUtil;
 import com.tomhusky.websocket.util.SpringContentUtil;
 import com.tomhusky.websocket.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,8 +31,11 @@ public class WebSocketMvcStart {
 
     private final WebSocketProperties properties;
 
-    public WebSocketMvcStart(WebSocketProperties properties) {
+    private final ApplicationContext applicationContext;
+
+    public WebSocketMvcStart(WebSocketProperties properties, ApplicationContext applicationContext) {
         this.properties = properties;
+        this.applicationContext = applicationContext;
     }
 
     private void init() {
@@ -53,7 +57,7 @@ public class WebSocketMvcStart {
         //扫包
         String baseControllerPackage = properties.getBasePackage();
         if (StringUtils.isBlank(baseControllerPackage)) {
-            throw new Error("请在配置文件中添加扫包范围");
+            throw new RuntimeException("请在配置文件中添加扫包范围");
         } else {
             List<Class<?>> classList = ClassUtil.getClasses(baseControllerPackage);
             for (Class clazz : classList) {
@@ -61,7 +65,7 @@ public class WebSocketMvcStart {
                 if (controller != null) {
                     String name = toLowerCaseFirstOne(clazz.getSimpleName());
                     //因为需要用到spring自带的依赖注入，直接获取spring中的对象
-                    Object bean = SpringContentUtil.getBean(name);
+                    Object bean = applicationContext.getBean(name);
                     IocContainer.objMap.put(name, bean);
                 }
             }

@@ -24,6 +24,10 @@ public class StringUtils {
         return str == null || "".equals(str);
     }
 
+    public static boolean isEmpty(Object str) {
+        return str == null || "".equals(str.toString());
+    }
+
     /**
      * 判断字符串是否不为空
      *

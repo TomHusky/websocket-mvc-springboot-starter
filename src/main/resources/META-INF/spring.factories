@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.tomhusky.websocket.configuration.WebSocketAutoConfiguration
+  com.tomhusky.websocket.configuration.WebSocketMvcAutoConfiguration,\
+  com.tomhusky.websocket.configuration.WebSocketAutoConfig

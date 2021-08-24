@@ -13,7 +13,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @Accessors(chain = true)
-@ConfigurationProperties(prefix = "webSockerMvc")
+@ConfigurationProperties(prefix = "web-socket-mvc")
 public class WebSocketProperties {
 
     private String basePackage;

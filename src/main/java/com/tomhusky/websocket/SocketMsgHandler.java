@@ -1,9 +1,9 @@
 package com.tomhusky.websocket;
 
 import com.tomhusky.websocket.bean.SocketRequest;
+import com.tomhusky.websocket.bean.SocketResult;
 import com.tomhusky.websocket.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,7 +17,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * @description: websocket消息处理器
  */
 @Slf4j
-@Component
 public class SocketMsgHandler extends TextWebSocketHandler {
     /**
      * 握手成功之后 回调方法
@@ -36,7 +35,7 @@ public class SocketMsgHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
-        log.info("来自客户端的消息:" + message);
+        log.debug("来自客户端的消息:" + message);
         SocketRequest socketRequest = null;
         try {
             socketRequest = FastJsonUtils.toObject(message.getPayload(), SocketRequest.class);
@@ -44,11 +43,11 @@ public class SocketMsgHandler extends TextWebSocketHandler {
             log.error(e.getMessage(), e);
         }
         if (socketRequest == null) {
-            SocketSessionManager.sendMessages(session.getId(), "请求数据有误");
+            SocketSessionManager.sendMessages(session.getId(), SocketResult.build("请求数据格式有误", ""));
             return;
         }
         //消息分发到指定控制器
-        DispatcherSocketRequest.dispatcher(message.getPayload(), session);
+        DispatcherSocketRequest.dispatcher(socketRequest, session);
     }
 
 

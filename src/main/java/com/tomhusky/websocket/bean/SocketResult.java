@@ -18,15 +18,20 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class SocketResult<T> implements Serializable {
 
-    /**
-     * 状态码
-     */
-    private int code;
+    private String url;
 
-    /**
-     * 信息
-     */
-    private String message;
+    private T body;
 
-    private T t;
+    public static <T> SocketResult<T> build(T body, String url) {
+        return new SocketResult<>(body, url);
+    }
+
+    public SocketResult() {
+
+    }
+
+    public SocketResult(T body, String url) {
+        this.body = body;
+        this.url = url;
+    }
 }

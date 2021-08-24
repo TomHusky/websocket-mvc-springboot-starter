@@ -14,12 +14,17 @@ import java.util.Map;
  * @Description:
  */
 public class MethodBean {
-
-    //方法属于的对象
+    /**
+     * 方法属于的对象
+     */
     private Object object;
-    //方法本身
+    /**
+     * 方法本身
+     */
     private Method method;
-    //方法的参数
+    /**
+     * 方法的参数
+     */
     private Map<String,Object> map;
 
     public MethodBean() {

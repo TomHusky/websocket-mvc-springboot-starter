@@ -1,17 +1,16 @@
-package com.tomhusky.websocket.config;
+package com.tomhusky.websocket.configuration;
 
 import com.tomhusky.websocket.Interceptor.SocketInterceptor;
 import com.tomhusky.websocket.SocketMsgHandler;
-import com.tomhusky.websocket.configuration.WebSocketAutoConfiguration;
+import com.tomhusky.websocket.configuration.WebSocketMvcAutoConfiguration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * @Author: lwj
@@ -21,10 +20,10 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * @Version: 1.0
  * @Description: webSocket核心类
  */
+@Slf4j
 @Configuration
 @EnableWebSocket
-@ConditionalOnBean(WebSocketAutoConfiguration.class)
-public class WebSocketConfig implements WebSocketConfigurer {
+public class WebSocketAutoConfig implements WebSocketConfigurer {
 
     @Autowired
     private SocketMsgHandler socketMsgHandler;
@@ -33,6 +32,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
     private SocketInterceptor socketInterceptor;
 
     private static final String WEB_SOCKET_PATH = "websocket";
+
+    public WebSocketAutoConfig(){
+        log.debug("加载websocket配置...");
+    }
 
     /**
      * @param webSocketHandlerRegistry 把webscoket信息注册进去
