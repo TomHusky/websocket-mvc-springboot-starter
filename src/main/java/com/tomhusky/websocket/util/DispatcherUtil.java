@@ -1,11 +1,11 @@
 package com.tomhusky.websocket.util;
 
 import com.tomhusky.websocket.bean.MethodBean;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,21 +30,21 @@ public class DispatcherUtil {
      * @param methodBean
      * @return
      */
-    public static Object response(MethodBean methodBean) throws InvocationTargetException, IllegalAccessException {
+    public static Object response(MethodBean methodBean) {
         Method method = methodBean.getMethod();
         Object object = methodBean.getObject();
         //获取方法参数
-        Object[] param = getParam(methodBean.getMap());
+        Object[] param = getParam(methodBean.getParamValueMap());
         //执行请求方法获取执行结果
         return runMethod(method, object, param);
     }
 
-    private static Object runMethod(Method method, Object object, Object[] param) throws InvocationTargetException, IllegalAccessException {
+    private static Object runMethod(Method method, Object object, Object[] param) {
         Object invoke;
         if (param != null && param.length > 0) {
-            invoke = method.invoke(object, param);
+            invoke = ReflectionUtils.invokeMethod(method, object, param);
         } else {
-            invoke = method.invoke(object);
+            invoke = ReflectionUtils.invokeMethod(method, object);
         }
         return invoke;
     }

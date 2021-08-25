@@ -1,11 +1,10 @@
 package com.tomhusky.websocket.util;
 
 import com.tomhusky.websocket.enumerate.IocContainer;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ProjectName: SpringMVC
@@ -26,20 +25,20 @@ public class RequestEntry {
     /**
      * 方法参数值填充
      */
-    public static Map<String, Object> fillParam(Method method, Object data) {
+    public static Map<String, Object> fillParam(Method method, String data, WebSocketSession session) {
         if (method == null) {
             return Collections.emptyMap();
         }
-
-        HashMap<String, Object> paramNameValueMap = new HashMap<>(1);
+        Map<String, Object> paramNameValueMap = new TreeMap<>();
         for (Map.Entry<String, Class> entry : IocContainer.methodParamMap.get(method).entrySet()) {
             Class paramType = entry.getValue();
             String paramName = entry.getKey();
-            //将json数据转成Object对象
-            if (StringUtils.isEmpty(data)) {
-                data = "";
+            Object bean;
+            if (paramType == WebSocketSession.class) {
+                bean = session;
+            } else {
+                bean = FastJsonUtils.toObject(data, paramType);
             }
-            Object bean = FastJsonUtils.toObject(data.toString(), paramType);
             paramNameValueMap.put(paramName, bean);
         }
         return paramNameValueMap;

@@ -6,10 +6,11 @@ import com.tomhusky.websocket.configuration.WebSocketProperties;
 import com.tomhusky.websocket.enumerate.IocContainer;
 import com.tomhusky.websocket.exception.ControllerInvalidException;
 import com.tomhusky.websocket.util.ClassUtil;
-import com.tomhusky.websocket.util.SpringContentUtil;
 import com.tomhusky.websocket.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -93,7 +94,7 @@ public class WebSocketMvcStart {
                 }
             }
             //获取控制器上所有方法
-            Method[] declaredMethods = clazz.getDeclaredMethods();
+            Method[] declaredMethods = ReflectionUtils.getDeclaredMethods(clazz);
             for (Method method : declaredMethods) {
                 SocketRequestMapping mRequestMapping = method.getDeclaredAnnotation(SocketRequestMapping.class);
                 if (mRequestMapping != null) {
@@ -115,12 +116,13 @@ public class WebSocketMvcStart {
      */
     private void saveMethodParam(Method method) {
         Parameter[] parameters = method.getParameters();
-        if (parameters.length != 1) {
-            throw new ControllerInvalidException("requestMapping修饰的方法有且只能有一个参数");
+        if (parameters.length > 1 && parameters[0].getType() != WebSocketSession.class) {
+            throw new ControllerInvalidException("requestMapping修饰的方法只能有一个非WebSocketSession类型参数");
         }
-        Parameter parameter = parameters[0];
-        Map<String, Class> map = new HashMap<>(1);
-        map.put(parameter.getName(), parameter.getType());
+        Map<String, Class> map = new HashMap<>(parameters.length);
+        for (Parameter parameter : parameters) {
+            map.put(parameter.getName(), parameter.getType());
+        }
         IocContainer.methodParamMap.put(method, map);
     }
 

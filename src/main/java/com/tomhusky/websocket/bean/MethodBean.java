@@ -1,7 +1,11 @@
 package com.tomhusky.websocket.bean;
 
+import lombok.Data;
+
 import java.lang.reflect.Method;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @ProjectName: SpringMVC
@@ -13,6 +17,7 @@ import java.util.Map;
  * @Version: 1.0
  * @Description:
  */
+@Data
 public class MethodBean {
     /**
      * 方法属于的对象
@@ -25,47 +30,15 @@ public class MethodBean {
     /**
      * 方法的参数
      */
-    private Map<String,Object> map;
+    private Map<String,Object> paramValueMap;
 
     public MethodBean() {
     }
 
-    public MethodBean(Object object, Method method, Map<String,Object> map) {
+    public MethodBean(Object object, Method method, Map<String,Object> paramValueMap) {
         this.object = object;
         this.method = method;
-        this.map = map;
+        this.paramValueMap = paramValueMap;
     }
 
-    public Object getObject() {
-        return object;
-    }
-
-    public void setObject(Object object) {
-        this.object = object;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public void setMethod(Method method) {
-        this.method = method;
-    }
-
-    public Map<String,Object> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String,Object> map) {
-        this.map = map;
-    }
-
-    @Override
-    public String toString() {
-        return "MethodBean{" +
-                "object=" + object +
-                ", method=" + method +
-                ", map=" + map +
-                '}';
-    }
 }

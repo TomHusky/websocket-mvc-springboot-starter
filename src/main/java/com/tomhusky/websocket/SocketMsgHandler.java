@@ -4,6 +4,7 @@ import com.tomhusky.websocket.bean.SocketRequest;
 import com.tomhusky.websocket.bean.SocketResult;
 import com.tomhusky.websocket.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -17,12 +18,19 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * @description: websocket消息处理器
  */
 @Slf4j
-public class SocketMsgHandler extends TextWebSocketHandler {
+public final class SocketMsgHandler extends TextWebSocketHandler {
+
+    @Autowired
+    private CustomerWebSocketHandler customerWebSocketHandler;
+
     /**
      * 握手成功之后 回调方法
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
+        if (customerWebSocketHandler != null) {
+            customerWebSocketHandler.afterConnectionEstablished(session);
+        }
         SocketSessionManager.add(session.getId(), session);
     }
 
@@ -35,6 +43,9 @@ public class SocketMsgHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        if (customerWebSocketHandler != null) {
+            customerWebSocketHandler.handleMessage(session, message);
+        }
         log.debug("来自客户端的消息:" + message);
         SocketRequest socketRequest = null;
         try {
@@ -47,7 +58,7 @@ public class SocketMsgHandler extends TextWebSocketHandler {
             return;
         }
         //消息分发到指定控制器
-        DispatcherSocketRequest.dispatcher(socketRequest, session);
+        DispatcherSocketMsg.dispatcher(socketRequest, session);
     }
 
 
@@ -56,6 +67,9 @@ public class SocketMsgHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        if (customerWebSocketHandler != null) {
+            customerWebSocketHandler.afterConnectionClosed(session, status);
+        }
         SocketSessionManager.removeAndClose(session.getId());
     }
 

@@ -5,7 +5,6 @@ import com.tomhusky.websocket.bean.SocketRequest;
 import com.tomhusky.websocket.bean.SocketResult;
 import com.tomhusky.websocket.enumerate.IocContainer;
 import com.tomhusky.websocket.util.DispatcherUtil;
-import com.tomhusky.websocket.util.FastJsonUtils;
 import com.tomhusky.websocket.util.RequestEntry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,9 +21,9 @@ import java.util.Map;
  * @Description: 用于处理webSocket的消息，分发给相对应的处理器
  */
 @Slf4j
-public class DispatcherSocketRequest {
+public final class DispatcherSocketMsg {
 
-    private DispatcherSocketRequest() {
+    private DispatcherSocketMsg() {
 
     }
 
@@ -51,7 +50,7 @@ public class DispatcherSocketRequest {
                     return;
                 }
                 //获取请求入参值
-                Map<String, Object> paramNameValueMap = RequestEntry.fillParam(method, socketRequest.getBody());
+                Map<String, Object> paramNameValueMap = RequestEntry.fillParam(method, socketRequest.getBody(), session);
                 MethodBean methodBean = new MethodBean(obj, method, paramNameValueMap);
                 //获取响应的数据和类型
                 Object response = DispatcherUtil.response(methodBean);
