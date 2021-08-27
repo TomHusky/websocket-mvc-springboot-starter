@@ -16,6 +16,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "web-socket-mvc")
 public class WebSocketProperties {
 
+    /**
+     * 扫包路径
+     */
     private String basePackage;
 
+    /**
+     * token签名秘钥
+     */
+    private String signKey;
+
+    /**
+     * 开启身份验证
+     */
+    private Boolean enableValid;
+
+    private String loginPath;
 }

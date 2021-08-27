@@ -1,6 +1,7 @@
-package com.tomhusky.websocket.Interceptor;
+package com.tomhusky.websocket.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
@@ -18,6 +19,9 @@ import java.util.Map;
 @Slf4j
 public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
 
+    @Autowired
+    private ValidIntercept loginValidIntercept;
+
     /**
      * websocket 握手之前
      *
@@ -31,7 +35,9 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) throws Exception {
-        //TODO 获取token 校验
+        if (loginValidIntercept != null) {
+            return loginValidIntercept.attemptAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+        }
         log.debug("准备握手!");
         return true;
     }
@@ -51,6 +57,9 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
                                WebSocketHandler webSocketHandler,
                                Exception e) {
         log.debug("握手完成!");
+        if (loginValidIntercept != null) {
+            loginValidIntercept.successfulAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+        }
     }
 
 }

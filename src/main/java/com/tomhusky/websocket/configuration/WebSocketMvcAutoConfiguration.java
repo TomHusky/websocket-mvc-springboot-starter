@@ -1,12 +1,16 @@
 package com.tomhusky.websocket.configuration;
 
-import com.tomhusky.websocket.Interceptor.SocketInterceptor;
+import cn.hutool.core.util.StrUtil;
+import com.tomhusky.websocket.interceptor.SocketInterceptor;
 import com.tomhusky.websocket.SocketMsgHandler;
+import com.tomhusky.websocket.listener.LoginServlet;
 import com.tomhusky.websocket.listener.WebSocketMvcStart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,5 +48,17 @@ public class WebSocketMvcAutoConfiguration {
     @Bean
     public SocketMsgHandler socketMsgHandler() {
         return new SocketMsgHandler();
+    }
+
+    @Bean
+    public ServletRegistrationBean getServletRegistrationBean() {
+        ServletRegistrationBean bean = new ServletRegistrationBean(new LoginServlet());
+        //访问路径
+        if (StrUtil.isNotBlank(properties.getLoginPath())) {
+            bean.addUrlMappings(properties.getLoginPath());
+        }else {
+            bean.addUrlMappings("/websocket/login");
+        }
+        return bean;
     }
 }

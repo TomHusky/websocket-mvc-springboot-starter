@@ -1,12 +1,9 @@
 package com.tomhusky.websocket.configuration;
 
-import com.tomhusky.websocket.Interceptor.SocketInterceptor;
+import com.tomhusky.websocket.interceptor.SocketInterceptor;
 import com.tomhusky.websocket.SocketMsgHandler;
-import com.tomhusky.websocket.configuration.WebSocketMvcAutoConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
