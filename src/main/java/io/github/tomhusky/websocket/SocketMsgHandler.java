@@ -54,7 +54,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
             log.error(e.getMessage(), e);
         }
         if (socketRequest == null) {
-            SocketSessionManager.sendMessages(session.getId(), SocketResult.build("请求数据格式有误", ""));
+            SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail("请求数据格式有误"));
             return;
         }
         //消息分发到指定控制器

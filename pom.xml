@@ -5,7 +5,7 @@
 
     <groupId>io.github.tomhusky</groupId>
     <artifactId>websocket-mvc-springboot-starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>websocket-mvc-springboot-starter</name>
     <description>类似于springmvc方式的websocket通信</description>

@@ -31,5 +31,8 @@ public class WebSocketProperties {
      */
     private Boolean enableValid;
 
+    /**
+     * 登录验证接口
+     */
     private String loginPath;
 }

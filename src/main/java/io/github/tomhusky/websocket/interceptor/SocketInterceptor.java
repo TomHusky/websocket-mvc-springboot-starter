@@ -1,12 +1,16 @@
 package io.github.tomhusky.websocket.interceptor;
 
+import io.github.tomhusky.websocket.configuration.WebSocketProperties;
+import io.github.tomhusky.websocket.exception.InterceptorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -19,8 +23,23 @@ import java.util.Map;
 @Slf4j
 public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
 
-    @Autowired
-    private ValidIntercept loginValidIntercept;
+    @Resource
+    private ApplicationContext applicationContext;
+
+    private final WebSocketProperties webSocketProperties;
+
+    private LoginValidIntercept loginValidIntercept;
+
+    public SocketInterceptor(WebSocketProperties webSocketProperties) {
+        this.webSocketProperties = webSocketProperties;
+        if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
+            try {
+                this.loginValidIntercept = applicationContext.getBean(LoginValidIntercept.class);
+            } catch (NullPointerException e) {
+                throw new InterceptorException("ValidIntercept impl is null");
+            }
+        }
+    }
 
     /**
      * websocket 握手之前
@@ -30,12 +49,11 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
      * @param webSocketHandler
      * @param map                websocket 中的 attributes
      * @return true 继续执行，false 终端
-     * @throws Exception
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
-                                   Map<String, Object> map) throws Exception {
-        if (loginValidIntercept != null) {
+                                   Map<String, Object> map) {
+        if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
             return loginValidIntercept.attemptAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
         }
         log.debug("准备握手!");
@@ -57,7 +75,7 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
                                WebSocketHandler webSocketHandler,
                                Exception e) {
         log.debug("握手完成!");
-        if (loginValidIntercept != null) {
+        if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
             loginValidIntercept.successfulAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
         }
     }

@@ -2,7 +2,6 @@ package io.github.tomhusky.websocket.bean;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -15,8 +14,11 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 public class SocketResult<T> implements Serializable {
+
+    private Integer status;
+
+    private String errorMsg;
 
     private String url;
 
@@ -26,12 +28,46 @@ public class SocketResult<T> implements Serializable {
         return new SocketResult<>(body, url);
     }
 
+    public static <T> SocketResult<T> build(String url) {
+        return new SocketResult<>(url);
+    }
+
+    public SocketResult<T> fail() {
+        this.status = 500;
+        this.errorMsg = "请求失败";
+        return this;
+    }
+
+    public SocketResult<T> fail(Integer status, String errorMsg) {
+        this.status = status;
+        this.errorMsg = errorMsg;
+        return this;
+    }
+
+    public SocketResult<T> fail(String errorMsg) {
+        this.status = 500;
+        this.errorMsg = errorMsg;
+        return this;
+    }
+
+    public SocketResult<T> ok() {
+        this.status = 200;
+        return this;
+    }
+
     public SocketResult() {
 
+    }
+
+    public SocketResult(String url) {
+        this.url = url;
+        this.status = 200;
     }
 
     public SocketResult(T body, String url) {
         this.body = body;
         this.url = url;
+        this.status = 200;
     }
+
 }
