@@ -14,12 +14,10 @@ import org.springframework.web.socket.WebSocketHandler;
 public abstract class LoginValidIntercept implements ValidIntercept {
 
     @Override
-    public boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler) {
-        return true;
-    }
+    public abstract boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
+                                                  WebSocketHandler webSocketHandler);
 
     @Override
-    public void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler) {
-
-    }
+    public abstract void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
+                                                  WebSocketHandler webSocketHandler);
 }

@@ -2,6 +2,7 @@ package io.github.tomhusky.websocket.interceptor;
 
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
 import io.github.tomhusky.websocket.exception.InterceptorException;
+import io.github.tomhusky.websocket.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -23,9 +24,6 @@ import java.util.Map;
 @Slf4j
 public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
 
-    @Resource
-    private ApplicationContext applicationContext;
-
     private final WebSocketProperties webSocketProperties;
 
     private LoginValidIntercept loginValidIntercept;
@@ -34,9 +32,8 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
         this.webSocketProperties = webSocketProperties;
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
             try {
-                this.loginValidIntercept = applicationContext.getBean(LoginValidIntercept.class);
+                this.loginValidIntercept = SpringContextHolder.getBean(LoginValidIntercept.class);
             } catch (NullPointerException e) {
-                throw new InterceptorException("ValidIntercept impl is null");
             }
         }
     }
@@ -54,7 +51,7 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) {
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
-            return loginValidIntercept.attemptAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+            return getLoginValidIntercept().attemptAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
         }
         log.debug("准备握手!");
         return true;
@@ -76,8 +73,14 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
                                Exception e) {
         log.debug("握手完成!");
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
-            loginValidIntercept.successfulAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+            getLoginValidIntercept().successfulAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
         }
     }
 
+    protected LoginValidIntercept getLoginValidIntercept() {
+        if (this.loginValidIntercept == null) {
+            this.loginValidIntercept = SpringContextHolder.getBean(LoginValidIntercept.class);
+        }
+        return this.loginValidIntercept;
+    }
 }

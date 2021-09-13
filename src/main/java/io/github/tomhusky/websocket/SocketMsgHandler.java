@@ -4,11 +4,13 @@ import io.github.tomhusky.websocket.bean.SocketRequest;
 import io.github.tomhusky.websocket.bean.SocketResult;
 import io.github.tomhusky.websocket.util.FastJsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import javax.annotation.Resource;
 
 /**
  * @author luowj
@@ -20,8 +22,18 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Slf4j
 public final class SocketMsgHandler extends TextWebSocketHandler {
 
-    @Autowired
+    @Resource
+    private ApplicationContext applicationContext;
+
     private CustomerWebSocketHandler customerWebSocketHandler;
+
+    public SocketMsgHandler() {
+        try {
+            this.customerWebSocketHandler = applicationContext.getBean(CustomerWebSocketHandler.class);
+        } catch (NullPointerException e) {
+            log.debug("SocketMsgHandler impl is null");
+        }
+    }
 
     /**
      * 握手成功之后 回调方法

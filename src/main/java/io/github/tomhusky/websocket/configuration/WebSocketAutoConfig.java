@@ -9,6 +9,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import javax.annotation.Resource;
+
 /**
  * @Author: lwj
  * @Package: com.example.websocket.config
@@ -22,10 +24,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketAutoConfig implements WebSocketConfigurer {
 
-    @Autowired
+    @Resource
     private SocketMsgHandler socketMsgHandler;
 
-    @Autowired
+    @Resource
     private SocketInterceptor socketInterceptor;
 
     private static final String WEB_SOCKET_PATH = "websocket";
