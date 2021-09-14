@@ -2,7 +2,6 @@ package io.github.tomhusky.websocket.interceptor;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.socket.WebSocketHandler;
 
 /**
  * @author luowj
@@ -17,18 +16,16 @@ public interface ValidIntercept {
      *
      * @param serverHttpRequest: 请求
      * @param serverHttpResponse: 响应
-     * @param webSocketHandler: websocket回话
      * @return boolean
      */
-    boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler);
+    boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse);
 
     /**
      * 握手成功之后调用
      *
      * @param serverHttpRequest: 请求
      * @param serverHttpResponse: 响应
-     * @param webSocketHandler: websocket回话
      * @return void
      */
-    void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler);
+    void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse);
 }

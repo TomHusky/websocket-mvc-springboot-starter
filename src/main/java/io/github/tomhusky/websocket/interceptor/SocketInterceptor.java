@@ -1,17 +1,14 @@
 package io.github.tomhusky.websocket.interceptor;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
-import io.github.tomhusky.websocket.exception.InterceptorException;
 import io.github.tomhusky.websocket.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
-import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -51,7 +48,14 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) {
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
-            return getLoginValidIntercept().attemptAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+            String name = "Authorization";
+            if (CharSequenceUtil.isNotBlank(webSocketProperties.getTokenName())) {
+                name = webSocketProperties.getTokenName();
+            }
+            String token = serverHttpRequest.getHeaders().getFirst("Sec-WebSocket-Protocol");
+            serverHttpRequest.getHeaders().set(name, token);
+            serverHttpResponse.getHeaders().set("Sec-WebSocket-Protocol", token);
+            return getLoginValidIntercept().attemptAuthentication(serverHttpRequest, serverHttpResponse);
         }
         log.debug("准备握手!");
         return true;
@@ -67,13 +71,11 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
      * @param e
      */
     @Override
-    public void afterHandshake(ServerHttpRequest serverHttpRequest,
-                               ServerHttpResponse serverHttpResponse,
-                               WebSocketHandler webSocketHandler,
-                               Exception e) {
+    public void afterHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
+                               WebSocketHandler webSocketHandler, Exception e) {
         log.debug("握手完成!");
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
-            getLoginValidIntercept().successfulAuthentication(serverHttpRequest, serverHttpResponse, webSocketHandler);
+            getLoginValidIntercept().successfulAuthentication(serverHttpRequest, serverHttpResponse);
         }
     }
 

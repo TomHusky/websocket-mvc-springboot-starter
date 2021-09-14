@@ -22,9 +22,9 @@ public class WebSocketProperties {
     private String basePackage;
 
     /**
-     * token签名秘钥
+     * token字段名称
      */
-    private String signKey;
+    private String tokenName;
 
     /**
      * 开启身份验证

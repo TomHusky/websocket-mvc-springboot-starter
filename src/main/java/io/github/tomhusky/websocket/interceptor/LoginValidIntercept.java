@@ -2,7 +2,6 @@ package io.github.tomhusky.websocket.interceptor;
 
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.socket.WebSocketHandler;
 
 /**
  * @author luowj
@@ -14,10 +13,8 @@ import org.springframework.web.socket.WebSocketHandler;
 public abstract class LoginValidIntercept implements ValidIntercept {
 
     @Override
-    public abstract boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
-                                                  WebSocketHandler webSocketHandler);
+    public abstract boolean attemptAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse);
 
     @Override
-    public abstract void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse,
-                                                  WebSocketHandler webSocketHandler);
+    public abstract void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse);
 }
