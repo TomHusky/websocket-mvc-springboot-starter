@@ -41,7 +41,7 @@ public class SocketSessionManager {
     /**
      * 移除 websocket 会话,并将该会话内容返回
      *
-     * @param key: key
+     * @param key key
      * @return org.springframework.web.socket.WebSocketSession
      */
     public static WebSocketSession remove(String key) {
@@ -53,7 +53,7 @@ public class SocketSessionManager {
     /**
      * 删除 websocket,并关闭连接
      *
-     * @param key: key
+     * @param key key
      */
     public static void removeAndClose(String key) {
         WebSocketSession session = remove(key);
@@ -69,7 +69,7 @@ public class SocketSessionManager {
     /**
      * 获取 websocket 会话
      *
-     * @param key: key
+     * @param key key
      * @return org.springframework.web.socket.WebSocketSession
      */
     public static WebSocketSession get(String key) {
