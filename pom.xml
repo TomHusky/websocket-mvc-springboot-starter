@@ -5,7 +5,7 @@
 
     <groupId>io.github.tomhusky</groupId>
     <artifactId>websocket-mvc-springboot-starter</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
     <name>websocket-mvc-springboot-starter</name>
     <url>https://github.com/TomHusky/websocket-mvc-springboot-starter</url>
