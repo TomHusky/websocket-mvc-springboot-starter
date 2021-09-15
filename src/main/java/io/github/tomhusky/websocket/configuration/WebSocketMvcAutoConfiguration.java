@@ -14,11 +14,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author luowj
- * @className: WebSocketAutoConfiguration
- * @date 2021/8/23 11:40
- * @version：1.0
- * @description: websocker 自动配置加载类
+ * <p> Websocket 自动配置加载类 <p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Slf4j
 @Configuration

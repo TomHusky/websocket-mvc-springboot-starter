@@ -5,11 +5,10 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
- * @author luowj
- * @className: CustomerWebSocketHandler
- * @date 2021/8/25 9:10
- * @version：1.0
- * @description: 自定义消息处理
+ * <p> 自定义消息处理 <p/>
+ *
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 public interface CustomerWebSocketHandler {
 
@@ -17,7 +16,6 @@ public interface CustomerWebSocketHandler {
      * 且 WebSocket 连接已打开并可供使用后调用。
      *
      * @param webSocketSession: 回话对象
-     * @return void
      */
     void afterConnectionEstablished(WebSocketSession webSocketSession);
 
@@ -26,7 +24,6 @@ public interface CustomerWebSocketHandler {
      *
      * @param webSocketSession: 回话对象
      * @param message:          消息内容
-     * @return void
      */
     void handleMessage(WebSocketSession webSocketSession, TextMessage message);
 
@@ -35,7 +32,6 @@ public interface CustomerWebSocketHandler {
      *
      * @param webSocketSession: 回话对象
      * @param status:           状态码
-     * @return void
      */
     void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus status);
 }

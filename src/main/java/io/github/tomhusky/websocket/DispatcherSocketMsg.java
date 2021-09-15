@@ -13,12 +13,10 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * @Author: lwj
- * @Package: com.gzfyit.iot.flowerpot.socket
- * @ClassName: DispatcherSocketRequest
- * @CreateDate: 2019/7/31 14:45
- * @Version: 1.0
- * @Description: 用于处理webSocket的消息，分发给相对应的处理器
+ * <p> 用于处理webSocket的消息，分发给相对应的处理器 <p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:45
  */
 @Slf4j
 public final class DispatcherSocketMsg {
@@ -29,22 +27,25 @@ public final class DispatcherSocketMsg {
 
     /**
      * 请求分发
+     *
+     * @param socketRequest: socket请求
+     * @param session:       websocket回话对象
      */
     public static void dispatcher(SocketRequest socketRequest, WebSocketSession session) {
         try {
             if (socketRequest == null || socketRequest.getUrl() == null) {
-                SocketSessionManager.sendMessages(session.getId(), SocketResult.build(socketRequest.getUrl()).fail("数据格式错误"));
+                SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail("数据格式错误"));
                 return;
             }
             //请求地址
             String requestURI = socketRequest.getUrl();
             //获取url映射的对象
-            Object obj = IocContainer.urlObjMap.get(requestURI);
+            Object obj = IocContainer.URL_OBJ_MAP.get(requestURI);
             if (obj == null) {
                 SocketSessionManager.sendMessages(session.getId(), SocketResult.build(socketRequest.getUrl()).fail("请求url不存在"));
             } else {
                 //获取对应请求方法
-                Method method = IocContainer.methodMap.get(requestURI);
+                Method method = IocContainer.METHOD_MAP.get(requestURI);
                 if (method == null) {
                     SocketSessionManager.sendMessages(session.getId(), SocketResult.build(socketRequest.getUrl()).fail("找不到对应的SocketRequestMapping处理器"));
                     return;

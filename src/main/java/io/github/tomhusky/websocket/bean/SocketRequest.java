@@ -3,11 +3,10 @@ package io.github.tomhusky.websocket.bean;
 import lombok.Data;
 
 /**
- * @Author: lwj
- * @Package: com.gzfyit.iot.flowerpot.socket.bean
- * @ClassName: SocketRequest
- * @CreateDate: 2019/7/31 14:49
- * @Description: webSocket请求类
+ * <p>webSocket请求参数类<p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Data
 public class SocketRequest {

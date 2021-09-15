@@ -12,38 +12,36 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * @ProjectName: CustomSpring
- * @Package: com.lwj.spring.util
- * @ClassName: ClassUtil
- * @Author: lwj
- * @CreateDate: 2019/02/14 18:25
- * @UpdateDate: 2019/02/14 18:25
- * @Version: 1.0
- * @Description:
+ * <p> class工具类 <p/>
+ *
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 public class ClassUtil {
-    private ClassUtil(){
+    private ClassUtil() {
 
     }
+
     /**
      * 取得某个接口下所有实现这个接口的类
+     *
+     * @param c:
+     * @return java.util.List<java.lang.Class < ?>>
      */
-    public static List<Class> getAllClassByInterface(Class c) {
-        List<Class> returnClassList = null;
+    public static List<Class<?>> getAllClassByInterface(Class<?> c) {
+        List<Class<?>> returnClassList = null;
         if (c.isInterface()) {
             // 获取当前的包名
             String packageName = c.getPackage().getName();
             // 获取当前包下以及子包下所以的类
             List<Class<?>> allClass = getClasses(packageName);
-            if (allClass != null) {
-                returnClassList = new ArrayList<>();
-                for (Class classes : allClass) {
-                    // 判断是否是同一个接口
-                    if (c.isAssignableFrom(classes)) {
-                        // 本身不加入进去
-                        if (!c.equals(classes)) {
-                            returnClassList.add(classes);
-                        }
+            returnClassList = new ArrayList<>();
+            for (Class classes : allClass) {
+                // 判断是否是同一个接口
+                if (c.isAssignableFrom(classes)) {
+                    // 本身不加入进去
+                    if (!c.equals(classes)) {
+                        returnClassList.add(classes);
                     }
                 }
             }
@@ -66,20 +64,31 @@ public class ClassUtil {
         if (packeageDir.isDirectory()) {
             return packeageDir.list();
         }
-        return null;
+        return new String[]{};
     }
 
-    //获取某个包下的所有子包名，不迭代
+    /**
+     * 获取某个包下的所有子包名，不迭代
+     *
+     * @param packageName: 包名
+     * @return java.util.List<java.lang.String>
+     */
     public static List<String> getPackage(String packageName) {
         String filePath = ClassLoader.getSystemResource("").getPath() + packageName.replace(".", "\\");
         return getClassName(filePath);
     }
-    //遍历目录
+
+    /**
+     * 遍历目录
+     *
+     * @param filePath: 目录地址
+     * @return java.util.List<java.lang.String>
+     */
     private static List<String> getClassName(String filePath) {
         List<String> packages = new ArrayList<>();
         File file = new File(filePath);
         File[] childFiles = file.listFiles();
-        if (childFiles!=null){
+        if (childFiles != null) {
             for (File childFile : childFiles) {
                 if (childFile.isDirectory()) {
                     packages.add(childFile.getName());
@@ -92,8 +101,8 @@ public class ClassUtil {
     /**
      * 从包package中获取所有的Class
      *
-     * @param packageName
-     * @return
+     * @param packageName: 包名
+     * @return java.util.List<java.lang.Class < ?>>
      */
     public static List<Class<?>> getClasses(String packageName) {
         // 第一个class类的集合
@@ -169,16 +178,16 @@ public class ClassUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return classes;
     }
+
     /**
      * 以文件的形式来获取包下的所有Class
      *
-     * @param packageName
-     * @param packagePath
-     * @param recursive
-     * @param classes
+     * @param packageName: 包名
+     * @param packagePath: 包路径
+     * @param recursive:   是否递归
+     * @param classes:     类
      */
     public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive,
                                                         List<Class<?>> classes) {
@@ -191,6 +200,9 @@ public class ClassUtil {
         // 如果存在 就获取包下的所有文件 包括目录
         // 自定义过滤规则 如果可以循环(包含子目录) 或则是以.class结尾的文件(编译好的java类文件)
         File[] dirFiles = dir.listFiles(file -> (recursive && file.isDirectory()) || (file.getName().endsWith(".class")));
+        if (dirFiles == null) {
+            return;
+        }
         // 循环所有文件
         for (File file : dirFiles) {
             // 如果是目录 则继续扫描

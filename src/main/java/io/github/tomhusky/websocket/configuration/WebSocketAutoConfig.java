@@ -1,9 +1,8 @@
 package io.github.tomhusky.websocket.configuration;
 
-import io.github.tomhusky.websocket.interceptor.SocketInterceptor;
 import io.github.tomhusky.websocket.SocketMsgHandler;
+import io.github.tomhusky.websocket.interceptor.SocketInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -12,12 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import javax.annotation.Resource;
 
 /**
- * @Author: lwj
- * @Package: com.example.websocket.config
- * @ClassName: WebSocketConfig
- * @CreateDate: 2019/7/30 16:09
- * @Version: 1.0
- * @Description: webSocket核心类
+ * <p> webSocket核心类 <p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Slf4j
 @Configuration
@@ -32,7 +29,7 @@ public class WebSocketAutoConfig implements WebSocketConfigurer {
 
     private static final String WEB_SOCKET_PATH = "websocket";
 
-    public WebSocketAutoConfig(){
+    public WebSocketAutoConfig() {
         log.debug("加载websocket配置...");
     }
 

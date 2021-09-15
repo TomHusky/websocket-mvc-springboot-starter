@@ -8,26 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * @ProjectName: SpringMVC
- * @Package: com.lwj.mvc.util
- * @ClassName: DispatcherUtil
- * @Author: lwj
- * @CreateDate: 2019/02/23 11:27
- * @UpdateDate: 2019/02/23 11:27
- * @Version: 1.0
- * @Description: 分发帮助类
+ * <p> 请求分发帮助类 <p/>
+ *
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 public class DispatcherUtil {
+
     private DispatcherUtil() {
 
     }
 
     /**
-     * 用于分发
+     * 分发核心方法
      *
-     * @param methodBean
-     * @return
+     * @param methodBean: 方法参数
+     * @return java.lang.Object
      */
     public static Object response(MethodBean methodBean) {
         Method method = methodBean.getMethod();
@@ -38,6 +36,14 @@ public class DispatcherUtil {
         return runMethod(method, object, param);
     }
 
+    /**
+     * 解析方法参数
+     *
+     * @param method: 方法对象
+     * @param object: 方法对应的实体
+     * @param param:  方法参数
+     * @return java.lang.Object
+     */
     private static Object runMethod(Method method, Object object, Object[] param) {
         Object invoke;
         if (param != null && param.length > 0) {
@@ -48,6 +54,12 @@ public class DispatcherUtil {
         return invoke;
     }
 
+    /**
+     * map转数组
+     *
+     * @param map: map对象
+     * @return java.lang.Object[]
+     */
     private static Object[] getParam(Map<String, Object> map) {
         if (map == null || map.size() < 1) {
             return new Object[0];

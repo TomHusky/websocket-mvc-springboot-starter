@@ -1,8 +1,7 @@
 package io.github.tomhusky.websocket.util;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.serializer.JSONLibDataFormatSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -13,9 +12,10 @@ import java.util.List;
 
 
 /**
- * JSON处理类
+ * <p> JSON处理类 <p/>
  *
- * @author caolei
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 public class FastJsonUtils {
 
@@ -57,10 +57,10 @@ public class FastJsonUtils {
     }
 
     /**
-     * 获取JSON格式字符串
+     * 对象转JSON格式字符串
      *
-     * @param obj
-     * @return
+     * @param obj: 对象
+     * @return java.lang.String
      */
     public static String toString(Object obj) {
         if (obj == null) {
@@ -73,12 +73,12 @@ public class FastJsonUtils {
     /**
      * 获取JSON格式字符串的byte
      *
-     * @param obj
-     * @return
+     * @param obj: 对象
+     * @return byte[]
      */
     public static byte[] toJsonByte(Object obj) {
         if (obj == null) {
-            return null;
+            return new byte[]{};
         } else {
             return JSON.toJSONString(obj, SerializerFeature.WriteMapNullValue).getBytes();
         }
@@ -87,8 +87,8 @@ public class FastJsonUtils {
     /**
      * 获取JSON格式字符串的byte, null的字段 不显示
      *
-     * @param obj
-     * @return
+     * @param obj 对象
+     * @return byte[]
      */
     public static byte[] toJsonNotNullByte(Object obj) {
         if (obj == null) {
@@ -101,22 +101,20 @@ public class FastJsonUtils {
     /**
      * JSON格式字符串转换成目标对象
      *
-     * @param <T>
-     * @param jsonStr JSON格式字符串
-     * @param cls     目标对象类型
-     * @return
+     * @param jsonStr:  JSON格式字符串
+     * @param cls: 需要转换的对象class
+     * @return T
      */
     public static <T> T toObject(String jsonStr, Class<T> cls) {
-        return JSONObject.parseObject(jsonStr, cls);
+        return JSON.parseObject(jsonStr, cls);
     }
 
     /**
      * 把json字符串转换成指定类型的对象
      *
-     * @param text
-     * @param type
-     * @param <T>
-     * @return
+     * @param text: json字符串
+     * @param type:  类型
+     * @return T
      */
     public static <T> T toBean(String text, TypeReference<T> type) {
         return JSON.parseObject(text, type);
@@ -125,15 +123,14 @@ public class FastJsonUtils {
     /**
      * JSON格式字符串转换成目标集合对象
      *
-     * @param <T>
-     * @param jsonStr JSON格式字符串
-     * @param cls     目标对象类型
-     * @return
+     * @param jsonStr: JSON格式字符串
+     * @param cls:  目标对象类型
+     * @return java.util.List<T>
      */
     public static <T> List<T> toList(String jsonStr, Class<T> cls) {
-        if (StringUtils.isBlank(jsonStr)) {
+        if (StrUtil.isBlank(jsonStr)) {
             return Collections.emptyList();
         }
-        return JSONArray.parseArray(jsonStr, cls);
+        return JSON.parseArray(jsonStr, cls);
     }
 }

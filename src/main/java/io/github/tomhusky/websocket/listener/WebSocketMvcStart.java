@@ -1,12 +1,12 @@
 package io.github.tomhusky.websocket.listener;
 
+import cn.hutool.core.util.StrUtil;
 import io.github.tomhusky.websocket.annotation.SocketController;
 import io.github.tomhusky.websocket.annotation.SocketRequestMapping;
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
 import io.github.tomhusky.websocket.enumerate.IocContainer;
 import io.github.tomhusky.websocket.exception.ControllerInvalidException;
 import io.github.tomhusky.websocket.util.ClassUtil;
-import io.github.tomhusky.websocket.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ReflectionUtils;
@@ -20,12 +20,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Author: lwj
- * @Package: com.gzfyit.iot.flowerpot.socket.listener
- * @ClassName: ApplicationStartup
- * @CreateDate: 2019/7/31 14:36
- * @Version: 1.0
- * @Description: spring容器初始化监听类
+ * <p> spring容器初始化监听类 <p/>
+ *
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 @Slf4j
 public class WebSocketMvcStart {
@@ -39,7 +37,7 @@ public class WebSocketMvcStart {
         this.applicationContext = applicationContext;
     }
 
-    private void init() {
+    public void init() {
         try {
             //2.初始化控制器Bean
             initController();
@@ -57,17 +55,17 @@ public class WebSocketMvcStart {
     private void initController() {
         //扫包
         String baseControllerPackage = properties.getBasePackage();
-        if (StringUtils.isBlank(baseControllerPackage)) {
-            throw new RuntimeException("请在配置文件中添加扫包范围");
+        if (StrUtil.isBlank(baseControllerPackage)) {
+            throw new ControllerInvalidException("请在配置文件中添加扫包范围");
         } else {
             List<Class<?>> classList = ClassUtil.getClasses(baseControllerPackage);
-            for (Class clazz : classList) {
+            for (Class<?> clazz : classList) {
                 Annotation controller = clazz.getDeclaredAnnotation(SocketController.class);
                 if (controller != null) {
                     String name = toLowerCaseFirstOne(clazz.getSimpleName());
                     //因为需要用到spring自带的依赖注入，直接获取spring中的对象
                     Object bean = applicationContext.getBean(name);
-                    IocContainer.objMap.put(name, bean);
+                    IocContainer.OBJ_MAP.put(name, bean);
                 }
             }
         }
@@ -77,7 +75,7 @@ public class WebSocketMvcStart {
      * 处理器映射
      */
     private void handlerMapping() {
-        for (Map.Entry entry : IocContainer.objMap.entrySet()) {
+        for (Map.Entry<String,Object> entry : IocContainer.OBJ_MAP.entrySet()) {
             Object controller = entry.getValue();
             String oneUrl = "/";
 
@@ -102,8 +100,8 @@ public class WebSocketMvcStart {
                         throw new ControllerInvalidException("方法映射地址不能为空");
                     }
                     String url = oneUrl + mRequestMapping.value();
-                    IocContainer.methodMap.put(url, method);
-                    IocContainer.urlObjMap.put(url, controller);
+                    IocContainer.METHOD_MAP.put(url, method);
+                    IocContainer.URL_OBJ_MAP.put(url, controller);
                     //保存方法参数
                     saveMethodParam(method);
                 }
@@ -119,11 +117,11 @@ public class WebSocketMvcStart {
         if (parameters.length > 1 && parameters[0].getType() != WebSocketSession.class) {
             throw new ControllerInvalidException("requestMapping修饰的方法只能有一个非WebSocketSession类型参数");
         }
-        Map<String, Class> map = new HashMap<>(parameters.length);
+        Map<String, Class<?>> map = new HashMap<>(parameters.length);
         for (Parameter parameter : parameters) {
             map.put(parameter.getName(), parameter.getType());
         }
-        IocContainer.methodParamMap.put(method, map);
+        IocContainer.METHOD_PARAM_MAP.put(method, map);
     }
 
     /**

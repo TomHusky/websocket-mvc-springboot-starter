@@ -3,12 +3,12 @@ package io.github.tomhusky.websocket.interceptor;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 
+
 /**
- * @author luowj
- * @className: LoginValidIntercept
+ * <p> 登陆校验接口 <p/>
+ *
+ * @author lwj
  * @date 2021/8/27 15:01
- * @version：1.0
- * @description: 登陆校验接口
  */
 public abstract class LoginValidIntercept implements ValidIntercept {
 

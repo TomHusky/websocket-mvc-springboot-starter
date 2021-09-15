@@ -5,11 +5,10 @@ import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author luowj
- * @className: WebSocketProperties
- * @date 2021/8/23 11:42
- * @version：1.0
- * @description: 配置类
+ * <p> Websocket 配置类 <p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Data
 @Accessors(chain = true)

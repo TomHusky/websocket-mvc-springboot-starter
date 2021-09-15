@@ -32,9 +32,10 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /**
- * 以静态变量保存Spring ApplicationContext, 可在任何代码任何地方任何时候中取出ApplicaitonContext.
+ * <p> 以静态变量保存Spring ApplicationContext, 可在任何代码任何地方任何时候中取出ApplicaitonContext. <p/>
  *
- * @author admin
+ * @author lwj
+ * @date 2021/8/27 15:01
  */
 @Slf4j
 public class SpringContextHolder implements ApplicationContextAware {
@@ -45,7 +46,6 @@ public class SpringContextHolder implements ApplicationContextAware {
      */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
-        // NOSONAR
         SpringContextHolder.applicationContext = applicationContext;
     }
 

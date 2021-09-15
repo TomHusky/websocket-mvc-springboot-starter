@@ -6,22 +6,33 @@ import lombok.EqualsAndHashCode;
 import java.io.Serializable;
 
 /**
- * @Author: lwj
- * @Package: com.gzfyit.iot.flowerpot.socket.util
- * @ClassName: SocketResult
- * @CreateDate: 2019/8/7 15:02
- * @Description: Socket连接返回类
+ * <p>Socket连接返回类<p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SocketResult<T> implements Serializable {
 
+    /**
+     * 状态码
+     */
     private Integer status;
 
+    /**
+     * 错误消息
+     */
     private String errorMsg;
 
+    /**
+     * 地址
+     */
     private String url;
 
+    /**
+     * 响应消息体
+     */
     private T body;
 
     public static <T> SocketResult<T> build(T body, String url) {

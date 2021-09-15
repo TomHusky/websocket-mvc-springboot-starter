@@ -8,11 +8,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @Author: lwj
- * @Package: com.fzfyit.aliyun.iot.flowerpot.socket.annotation
- * @ClassName: SocketController
- * @CreateDate: 2019/7/31 13:56
- * @Description: 用于webSocket的控制器
+ * <p>用于webSocket的控制器<p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

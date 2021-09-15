@@ -3,19 +3,13 @@ package io.github.tomhusky.websocket.bean;
 import lombok.Data;
 
 import java.lang.reflect.Method;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
- * @ProjectName: SpringMVC
- * @Package: com.lwj.mvc.util
- * @ClassName: MethodBean
- * @Author: lwj
- * @CreateDate: 2019/02/25 22:50
- * @UpdateDate: 2019/02/25 22:50
- * @Version: 1.0
- * @Description:
+ * <p>方法的bean对象<p/>
+ *
+ * @author lwj
+ * @date 2019/7/31 14:41
  */
 @Data
 public class MethodBean {
