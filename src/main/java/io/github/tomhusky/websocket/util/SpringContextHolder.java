@@ -35,7 +35,7 @@ import org.springframework.context.ConfigurableApplicationContext;
  * <p> 以静态变量保存Spring ApplicationContext, 可在任何代码任何地方任何时候中取出ApplicaitonContext. <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 @Slf4j
 public class SpringContextHolder implements ApplicationContextAware {

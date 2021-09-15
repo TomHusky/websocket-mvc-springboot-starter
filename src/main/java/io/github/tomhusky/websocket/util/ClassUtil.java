@@ -15,7 +15,7 @@ import java.util.jar.JarFile;
  * <p> class工具类 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 public class ClassUtil {
     private ClassUtil() {
@@ -25,7 +25,7 @@ public class ClassUtil {
     /**
      * 取得某个接口下所有实现这个接口的类
      *
-     * @param c:
+     * @param c 类
      * @return java.util.List<java.lang.Class < ?>>
      */
     public static List<Class<?>> getAllClassByInterface(Class<?> c) {
@@ -70,7 +70,7 @@ public class ClassUtil {
     /**
      * 获取某个包下的所有子包名，不迭代
      *
-     * @param packageName: 包名
+     * @param packageName 包名
      * @return java.util.List<java.lang.String>
      */
     public static List<String> getPackage(String packageName) {
@@ -81,7 +81,7 @@ public class ClassUtil {
     /**
      * 遍历目录
      *
-     * @param filePath: 目录地址
+     * @param filePath 目录地址
      * @return java.util.List<java.lang.String>
      */
     private static List<String> getClassName(String filePath) {
@@ -101,7 +101,7 @@ public class ClassUtil {
     /**
      * 从包package中获取所有的Class
      *
-     * @param packageName: 包名
+     * @param packageName 包名
      * @return java.util.List<java.lang.Class < ?>>
      */
     public static List<Class<?>> getClasses(String packageName) {
@@ -184,10 +184,10 @@ public class ClassUtil {
     /**
      * 以文件的形式来获取包下的所有Class
      *
-     * @param packageName: 包名
-     * @param packagePath: 包路径
-     * @param recursive:   是否递归
-     * @param classes:     类
+     * @param packageName  包名
+     * @param packagePath  包路径
+     * @param recursive    是否递归
+     * @param classes    类
      */
     public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive,
                                                         List<Class<?>> classes) {

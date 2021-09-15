@@ -13,7 +13,7 @@ import java.util.Map;
  * <p> 请求分发帮助类 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 public class DispatcherUtil {
 
@@ -24,7 +24,7 @@ public class DispatcherUtil {
     /**
      * 分发核心方法
      *
-     * @param methodBean: 方法参数
+     * @param methodBean 方法参数
      * @return java.lang.Object
      */
     public static Object response(MethodBean methodBean) {
@@ -39,9 +39,9 @@ public class DispatcherUtil {
     /**
      * 解析方法参数
      *
-     * @param method: 方法对象
-     * @param object: 方法对应的实体
-     * @param param:  方法参数
+     * @param method 方法对象
+     * @param object 方法对应的实体
+     * @param param  方法参数
      * @return java.lang.Object
      */
     private static Object runMethod(Method method, Object object, Object[] param) {
@@ -57,7 +57,7 @@ public class DispatcherUtil {
     /**
      * map转数组
      *
-     * @param map: map对象
+     * @param map map对象
      * @return java.lang.Object[]
      */
     private static Object[] getParam(Map<String, Object> map) {

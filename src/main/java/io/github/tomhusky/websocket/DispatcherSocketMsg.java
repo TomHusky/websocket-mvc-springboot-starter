@@ -16,7 +16,7 @@ import java.util.Map;
  * <p> 用于处理webSocket的消息，分发给相对应的处理器 <p/>
  *
  * @author lwj
- * @date 2019/7/31 14:45
+ * @since 2019/7/31 14:45
  */
 @Slf4j
 public final class DispatcherSocketMsg {
@@ -28,8 +28,8 @@ public final class DispatcherSocketMsg {
     /**
      * 请求分发
      *
-     * @param socketRequest: socket请求
-     * @param session:       websocket回话对象
+     * @param socketRequest socket请求
+     * @param session       websocket会话对象
      */
     public static void dispatcher(SocketRequest socketRequest, WebSocketSession session) {
         try {

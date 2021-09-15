@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * <p> Websocket 自动配置加载类 <p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Slf4j
 @Configuration

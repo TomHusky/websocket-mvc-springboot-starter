@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * <p> webSocket核心类 <p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Slf4j
 @Configuration

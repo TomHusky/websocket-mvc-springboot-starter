@@ -6,7 +6,7 @@ import lombok.Data;
  * <p>webSocket请求参数类<p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Data
 public class SocketRequest {

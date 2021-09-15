@@ -9,7 +9,7 @@ import java.io.Serializable;
  * <p>Socket连接返回类<p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

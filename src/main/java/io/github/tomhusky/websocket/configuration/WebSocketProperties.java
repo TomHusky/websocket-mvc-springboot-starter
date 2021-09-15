@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * <p> Websocket 配置类 <p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Data
 @Accessors(chain = true)

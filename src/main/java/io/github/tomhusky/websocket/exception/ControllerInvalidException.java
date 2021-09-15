@@ -4,7 +4,7 @@ package io.github.tomhusky.websocket.exception;
  * <p> 初始化自定义控制器时的异常 <p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 public class ControllerInvalidException extends RuntimeException {
 

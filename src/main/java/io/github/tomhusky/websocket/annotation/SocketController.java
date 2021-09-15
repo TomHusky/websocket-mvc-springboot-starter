@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <p>用于webSocket的控制器<p/>
  *
  * @author lwj
- * @date 2019/7/31 14:41
+ * @since 2019/7/31 14:41
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

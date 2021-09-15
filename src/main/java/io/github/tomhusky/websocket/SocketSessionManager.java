@@ -10,11 +10,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author luowj
- * @className: SocketSessionContainer
- * @date 2021/8/23 14:22
- * @version：1.0
- * @description: websocket回话容器
+ * <p> websocket会话容器 <p/>
+ *
+ * @author lwj
+ * @since 2019/7/31 14:41
  */
 @Slf4j
 public class SocketSessionManager {
@@ -25,15 +24,15 @@ public class SocketSessionManager {
 
     /**
      * websocket 会话池
-     * 如果想长期存在会话池  ，可以使用  Map<String, WebSocketSession>  来存储
+     * 如果想长期存在会话池，可以使用  Map<String, WebSocketSession>  来存储
      */
     private static final Map<String, WebSocketSession> WEB_SOCKET_SESSION_MAP = new ConcurrentHashMap<>();
 
     /**
      * 添加 websocket 会话
      *
-     * @param key:     key
-     * @param session: 回话对象
+     * @param key     key
+     * @param session 会话对象
      */
     public static synchronized void add(String key, WebSocketSession session) {
         WEB_SOCKET_SESSION_MAP.computeIfAbsent(key, k -> session);

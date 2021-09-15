@@ -8,7 +8,7 @@ import org.springframework.http.server.ServerHttpResponse;
  * <p> 登陆校验接口 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 public abstract class LoginValidIntercept implements ValidIntercept {
 

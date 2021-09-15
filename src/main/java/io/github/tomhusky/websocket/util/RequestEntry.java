@@ -10,7 +10,7 @@ import java.util.*;
  * <p> 请求入参 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 public class RequestEntry {
 
@@ -21,9 +21,9 @@ public class RequestEntry {
     /**
      * 方法参数值填充
      *
-     * @param method: 方法对象
-     * @param data: 数据
-     * @param session: websocket回话
+     * @param method 方法对象
+     * @param data 数据
+     * @param session websocket会话
      * @return java.util.Map<java.lang.String,java.lang.Object>
      */
     public static Map<String, Object> fillParam(Method method, String data, WebSocketSession session) {

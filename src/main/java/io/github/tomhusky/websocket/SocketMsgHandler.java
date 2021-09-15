@@ -16,7 +16,7 @@ import javax.annotation.Resource;
  * <p> websocket消息处理器 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 @Slf4j
 public final class SocketMsgHandler extends TextWebSocketHandler {
@@ -37,7 +37,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
     /**
      * 握手成功之后 回调方法
      *
-     * @param session: 回话对象
+     * @param session 会话对象
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -50,7 +50,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
     /**
      * 接收客户端消息
      *
-     * @param session 回话对象
+     * @param session 会话对象
      * @param message 消息内容
      */
     @Override

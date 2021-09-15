@@ -15,7 +15,7 @@ import java.util.Map;
  * <p> 在Websocket连接建立阶段（此时还是HTTP协议）拦截HTTP请求，获取到HttpSesion并保存。 webSocket握手拦截器 可用于验证登录 <p/>
  *
  * @author lwj
- * @date 2021/8/23 14:33
+ * @since 2021/8/23 14:33
  */
 @Slf4j
 public class SocketInterceptor extends HttpSessionHandshakeInterceptor {

@@ -15,7 +15,7 @@ import java.util.List;
  * <p> JSON处理类 <p/>
  *
  * @author lwj
- * @date 2021/8/27 15:01
+ * @since 2021/8/27 15:01
  */
 public class FastJsonUtils {
 
@@ -59,7 +59,7 @@ public class FastJsonUtils {
     /**
      * 对象转JSON格式字符串
      *
-     * @param obj: 对象
+     * @param obj 对象
      * @return java.lang.String
      */
     public static String toString(Object obj) {
@@ -73,7 +73,7 @@ public class FastJsonUtils {
     /**
      * 获取JSON格式字符串的byte
      *
-     * @param obj: 对象
+     * @param obj 对象
      * @return byte[]
      */
     public static byte[] toJsonByte(Object obj) {
@@ -101,8 +101,8 @@ public class FastJsonUtils {
     /**
      * JSON格式字符串转换成目标对象
      *
-     * @param jsonStr:  JSON格式字符串
-     * @param cls: 需要转换的对象class
+     * @param jsonStr  JSON格式字符串
+     * @param cls 需要转换的对象class
      * @return T
      */
     public static <T> T toObject(String jsonStr, Class<T> cls) {
@@ -112,8 +112,8 @@ public class FastJsonUtils {
     /**
      * 把json字符串转换成指定类型的对象
      *
-     * @param text: json字符串
-     * @param type:  类型
+     * @param text json字符串
+     * @param type  类型
      * @return T
      */
     public static <T> T toBean(String text, TypeReference<T> type) {
@@ -123,8 +123,8 @@ public class FastJsonUtils {
     /**
      * JSON格式字符串转换成目标集合对象
      *
-     * @param jsonStr: JSON格式字符串
-     * @param cls:  目标对象类型
+     * @param jsonStr JSON格式字符串
+     * @param cls  目标对象类型
      * @return java.util.List<T>
      */
     public static <T> List<T> toList(String jsonStr, Class<T> cls) {
