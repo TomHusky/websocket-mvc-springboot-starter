@@ -82,7 +82,7 @@ public class SocketSessionManager {
      * @param key  自定义 key
      * @param data 数据
      */
-    public static <T> void sendMessages(String key, T data) {
+    public static <T> boolean sendMessages(String key, T data) {
         String sendData = "";
         if (data != null) {
             try {
@@ -90,7 +90,7 @@ public class SocketSessionManager {
                 sendData = FastJsonUtils.toString(data);
             } catch (Exception e) {
                 log.error("json序列化异常，{}", e.getMessage());
-                return;
+                return false;
             }
         }
         // 根据 key 缓存中获取 WebSocketSession
@@ -103,5 +103,6 @@ public class SocketSessionManager {
         } catch (IOException e) {
             log.error("消息发送异常，{}", e.getMessage());
         }
+        return false;
     }
 }

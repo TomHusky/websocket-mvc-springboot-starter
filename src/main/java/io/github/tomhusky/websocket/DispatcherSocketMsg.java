@@ -4,9 +4,12 @@ import io.github.tomhusky.websocket.bean.MethodBean;
 import io.github.tomhusky.websocket.bean.SocketRequest;
 import io.github.tomhusky.websocket.bean.SocketResult;
 import io.github.tomhusky.websocket.enumerate.IocContainer;
+import io.github.tomhusky.websocket.exception.MethodParamsNotValidException;
 import io.github.tomhusky.websocket.util.DispatcherUtil;
 import io.github.tomhusky.websocket.util.RequestEntry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.Validator;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.reflect.Method;
@@ -21,8 +24,30 @@ import java.util.Map;
 @Slf4j
 public final class DispatcherSocketMsg {
 
-    private DispatcherSocketMsg() {
+    private final RequestEntry requestEntry;
 
+    private ConversionService conversionService;
+
+    private Validator validator;
+
+    public DispatcherSocketMsg(Validator validator, ConversionService conversionService) {
+        requestEntry = new RequestEntry(validator, conversionService);
+    }
+
+    public void setValidator(Validator validator) {
+        this.validator = validator;
+    }
+
+    public Validator getValidator() {
+        return validator;
+    }
+
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService = conversionService;
+    }
+
+    public ConversionService getConversionService() {
+        return conversionService;
     }
 
     /**
@@ -31,7 +56,7 @@ public final class DispatcherSocketMsg {
      * @param socketRequest socket请求
      * @param session       websocket会话对象
      */
-    public static void dispatcher(SocketRequest socketRequest, WebSocketSession session) {
+    public void dispatcher(SocketRequest socketRequest, WebSocketSession session) {
         try {
             if (socketRequest == null || socketRequest.getUrl() == null) {
                 SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail("数据格式错误"));
@@ -51,13 +76,16 @@ public final class DispatcherSocketMsg {
                     return;
                 }
                 //获取请求入参值
-                Map<String, Object> paramNameValueMap = RequestEntry.fillParam(method, socketRequest.getBody(), session);
+                Map<String, Object> paramNameValueMap = requestEntry.fillParam(method, socketRequest.getBody(), session);
                 MethodBean methodBean = new MethodBean(obj, method, paramNameValueMap);
                 //获取响应的数据和类型
                 Object response = DispatcherUtil.response(methodBean);
                 //返回数据
-                SocketSessionManager.sendMessages(session.getId(), SocketResult.build(response, socketRequest.getUrl()));
+                SocketSessionManager.sendMessages(session.getId(), SocketResult.build(response, socketRequest.getUrl()).ok());
             }
+        } catch (MethodParamsNotValidException e) {
+            log.error(e.getMessage(), e);
+            SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail(e.getMessage()));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

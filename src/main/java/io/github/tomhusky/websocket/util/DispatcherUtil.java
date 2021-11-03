@@ -46,6 +46,7 @@ public class DispatcherUtil {
      */
     private static Object runMethod(Method method, Object object, Object[] param) {
         Object invoke;
+        ReflectionUtils.makeAccessible(method);
         if (param != null && param.length > 0) {
             invoke = ReflectionUtils.invokeMethod(method, object, param);
         } else {

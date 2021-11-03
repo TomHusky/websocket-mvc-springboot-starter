@@ -46,6 +46,7 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
     @Override
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler,
                                    Map<String, Object> map) {
+        log.debug("准备握手!");
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
             String name = "Authorization";
             if (CharSequenceUtil.isNotBlank(webSocketProperties.getTokenName())) {
@@ -56,7 +57,6 @@ public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
             serverHttpResponse.getHeaders().set("Sec-WebSocket-Protocol", token);
             return getLoginValidIntercept().attemptAuthentication(serverHttpRequest, serverHttpResponse);
         }
-        log.debug("准备握手!");
         return true;
     }
 

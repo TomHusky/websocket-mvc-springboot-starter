@@ -1,10 +1,18 @@
 package io.github.tomhusky.websocket.util;
 
 import io.github.tomhusky.websocket.enumerate.IocContainer;
+import io.github.tomhusky.websocket.exception.MethodParamsNotValidException;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.DataBinder;
+import org.springframework.validation.Validator;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.lang.reflect.Parameter;
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * <p> 请求入参 <p/>
@@ -14,19 +22,24 @@ import java.util.*;
  */
 public class RequestEntry {
 
-    private RequestEntry() {
+    private final Validator validator;
 
+    private final ConversionService conversionService;
+
+    public RequestEntry(Validator validator, ConversionService conversionService) {
+        this.validator = validator;
+        this.conversionService = conversionService;
     }
 
     /**
      * 方法参数值填充
      *
-     * @param method 方法对象
-     * @param data 数据
+     * @param method  方法对象
+     * @param data    数据
      * @param session websocket会话
-     * @return java.util.Map<java.lang.String,java.lang.Object>
+     * @return java.util.Map<java.lang.String, java.lang.Object>
      */
-    public static Map<String, Object> fillParam(Method method, String data, WebSocketSession session) {
+    public Map<String, Object> fillParam(Method method, String data, WebSocketSession session) throws MethodParamsNotValidException{
         if (method == null) {
             return Collections.emptyMap();
         }
@@ -39,9 +52,36 @@ public class RequestEntry {
                 bean = session;
             } else {
                 bean = FastJsonUtils.toObject(data, paramType);
+                int size = paramNameValueMap.size() - 1;
+                if (size < 0) {
+                    size = 0;
+                }
+                Parameter parameter = method.getParameters()[size];
+                // 参数校验
+                validateIfApplicable(parameter, bean, paramName);
             }
             paramNameValueMap.put(paramName, bean);
         }
         return paramNameValueMap;
+    }
+
+    protected void validateIfApplicable(Parameter parameter, Object bean, String paramName) throws MethodParamsNotValidException{
+        if (parameter == null) {
+            return;
+        }
+        DataBinder dataBinder = new DataBinder(bean, paramName);
+        dataBinder.setValidator(validator);
+        dataBinder.setConversionService(conversionService);
+        Annotation[] annotations = parameter.getAnnotations();
+        for (Annotation ann : annotations) {
+            Object[] validationHints = ValidationAnnotationUtils.determineValidationHints(ann);
+            if (validationHints != null) {
+                dataBinder.validate(validationHints);
+                break;
+            }
+        }
+        if (dataBinder.getBindingResult().hasErrors()) {
+            throw new MethodParamsNotValidException(dataBinder.getBindingResult());
+        }
     }
 }
