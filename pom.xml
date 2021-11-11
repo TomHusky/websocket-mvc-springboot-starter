@@ -49,10 +49,12 @@
         </dependency>
         <!--   在 Spring Framework、5.2.15 之前的 5.2.x 版本和 5.3.7 之前的 5.3.x 版本中，WebFlux 应用程序容易受到权限提升的影响：通过（重新）创建临时
         存储目录，本地认证的恶意用户可以读取或修改已上传到 WebFlux 应用程序的文件，或使用多部分请求数据覆盖任意文件。   -->
+
+        <!--   在 Spring Framework 5.3.0 - 5.3.10、5.2.0 - 5.2.17 和不受支持的旧版本中，用户可能会提供恶意输入以导致插入额外的日志条目。   -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>5.2.16.RELEASE</version>
+            <version>5.2.18.RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -228,7 +230,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.5</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
