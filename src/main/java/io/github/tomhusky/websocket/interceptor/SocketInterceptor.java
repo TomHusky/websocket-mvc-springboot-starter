@@ -18,7 +18,7 @@ import java.util.Map;
  * @since 2021/8/23 14:33
  */
 @Slf4j
-public class SocketInterceptor extends HttpSessionHandshakeInterceptor {
+public final class SocketInterceptor extends HttpSessionHandshakeInterceptor {
 
     private final WebSocketProperties webSocketProperties;
 

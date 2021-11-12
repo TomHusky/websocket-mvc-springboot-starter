@@ -4,24 +4,24 @@
 
 <br>
 
-**`websocket-mvc-springboot-starter`实现了类似`spring-mvc`框架类似的方法映射，并且支持了诸多功能增强，极大简化和提高交互，简化消息处理逻辑**。
+&emsp;**`websocket-mvc-springboot-starter`实现了类似`spring-mvc`框架类似的方法映射，并且支持了诸多功能增强，极大简化和提高交互，简化消息处理逻辑**。
 
 <br>
 
-🚀项目会持续优化迭代，欢迎大家提ISSUE！麻烦大家能给一颗star，您的star是我们持续更新的动力，感谢！
+&emsp;🚀项目会持续优化迭代，欢迎大家提ISSUE！麻烦大家能给一颗star，您的star是我们持续更新的动力，感谢！
 
 <br>
 
-github项目地址：[https://github.com/TomHusky/websocket-mvc-springboot-starter](https://github.com/TomHusky/websocket-mvc-springboot-starter)
+&emsp;github项目地址：[https://github.com/TomHusky/websocket-mvc-springboot-starter](https://github.com/TomHusky/websocket-mvc-springboot-starter)
 
-示例demo：...
+&emsp;示例demo：...
 
 ## 功能特性
 
-- [1] [消息方法映射](#消息方法映射)
-- [2] [握手token校验](#注解式拦截器)
+- [1] [定义控制器接口](#定义控制器接口)
+- [2] [消息接收格式和发送格式](#消息接收格式和发送格式)
 - [3] [拦截器](#拦截器)
-- [4] [@Valid参数校验](#日志打印)
+- [4] [参数注入和参数校验](#参数注入和参数校验)
   <br>
 
 ## 快速使用
@@ -38,11 +38,16 @@ github项目地址：[https://github.com/TomHusky/websocket-mvc-springboot-start
 ```
 <br>
 
-### 1.定义控制器接口
+### 定义控制器接口
 
-控制器接口必须使用`@SocketRequestMapping` 注解,这样才能被扫描到，否则控制器无法使用。@SocketRequestMapping注解在类上时，value可以不填，注解在方法上时必填，否则无法找到对应的处理器。类似于springmvc；
+&emsp;控制器接口必须使用`@SocketController` 注解,这样才能被扫描到，否则控制器无法使用
+
+`@SocketRequestMapping`注解在类上时，value可以不填，注解在方法上时必填，否则无法找到对应的处理器，类似于springmvc；
+
+下面按理里面控制器对应的路径为 /test/getValue
 
 ```java
+@SocketController
 @SocketRequestMapping("/test")
 public class TestController {
     
@@ -55,7 +60,7 @@ public class TestController {
 ```
 
 
-### 2.配置扫描包
+### 配置扫描包
 ```yaml
 web-socket-mvc:
   basePackage: io.github.tomhusky.test.controller
@@ -63,8 +68,9 @@ web-socket-mvc:
 配置控制器所在的包路径，则在io.github.tomhusky.test.controller所有注解了`@SocketRequestMapping`的控制器都被扫描到。
 
 ### 3.消息接收格式和发送格式
+>框架严格控制消息传递的内容，如果格式不对，内容将无法正确的传输，所以这个是必须的！
 
-消息接收格式（客户端发送消息的内容格式）
+客户端发送消息的内容格式（服务端接收消息格式）
 
 ```json
 {
@@ -72,13 +78,11 @@ web-socket-mvc:
     "body":"hello"
 }
 ```
-框架严格控制消息传递的内容，如果格式不对，内容将无法正确的传输，所以这个是必须的！
 - url&emsp;&emsp;&nbsp;控制器的地址，用于映射。
 - body&emsp;消息内容，可以为任意字符串，推荐使用json
 
 <br>
-
-消息发送内容格式
+服务端消息发送内容格式（客户端接收消息格式）
 
 ```json
 {
@@ -86,7 +90,7 @@ web-socket-mvc:
   "type": 1,
   "errorMsg": "",
   "url": "/test/getValue",
-  "body": "ok"
+  "body": "hello world"
 }
 ```
 - status&emsp;&emsp;&nbsp;&nbsp;状态； 200 成功 ， 500失败 ；仅在type为1时有效
@@ -94,3 +98,173 @@ web-socket-mvc:
 - errorMsg&emsp;错误原因； 仅在status不是200时有效
 - url&emsp;&emsp;&emsp;&emsp;&nbsp;消息对应的地址；同消息接收一致
 - body&emsp;&emsp;&emsp;消息内容；同消息接收一致
+
+<br>
+
+### 拦截器
+
+#### 回话拦截器
+
+通过实现`CustomerWebSocketHandler`接口，服务端可以实现客户端连接和消息拦截，根据不同是回调进行相应的业务处理，比如连接成功之后保存用户对应的回话；（注意，实现接口的类必须注入到spring容器里面，否则不起作用）
+```java
+public interface CustomerWebSocketHandler {
+
+    /**
+     * 且 WebSocket 连接已打开并可供使用后调用。
+     *
+     * @param webSocketSession 会话对象
+     */
+    void afterConnectionEstablished(WebSocketSession webSocketSession);
+
+    /**
+     * 消息到达时调用
+     *
+     * @param webSocketSession 会话对象
+     * @param message          消息内容
+     */
+    void handleMessage(WebSocketSession webSocketSession, TextMessage message);
+
+    /**
+     * 在 WebSocket 连接被任一方关闭后或发生传输错误后调用。
+     *
+     * @param webSocketSession 会话对象
+     * @param status           状态码
+     */
+    void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus status);
+}
+```
+
+实现接口，加上@Component注解
+
+```java
+
+@Slf4j
+@Component
+public class WebSocketMsgHandler implements CustomerWebSocketHandler {
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession webSocketSession) {
+        log.info("------------连接成功:{}-------------", webSocketSession.getId());
+    }
+
+    @Override
+    public void handleMessage(WebSocketSession webSocketSession, TextMessage textMessage) {
+        log.info("------------收到消息:{}-------------", webSocketSession.getId());
+        log.info(textMessage.getPayload());
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) {
+        log.info("------------连接关闭{}-------------", webSocketSession.getId());
+    }
+}
+```
+
+#### 登录拦截器
+
+springboot默认的连接是不提供登录校验的，不过你也得开放socket接口；为了方便开放人员，框架实现了JWT方式的登录校验拦截器，客户端只需要在连接的时候，加入token，拦截器则会把token注入到请求头的 `Authorization` 字段，这个字段名可以通过配置文件进行修改；在拦截器里面获取token之后进行逻辑校验;
+
+- 继承LoginValidIntercept接口，加入@Component注解,attemptAuthentication是在握手之前被调用的，返回true则允许客户端连接返回false则拒绝连接。 successfulAuthentication方法在通过客户端连接并且握手成功之后被调用；
+
+- 注意 LoginValidIntercept类只能被一个类基础，多个spring会报数量异常，返回不止一个子类；
+
+```java
+@Slf4j
+@Component
+public class TokenValidIntercept extends LoginValidIntercept {
+
+    public static final String TOKEN_HEAD = "Authorization";
+
+    @Override
+    public boolean attemptAuthentication(ServerHttpRequest request, ServerHttpResponse response) {
+        String token = request.getHeaders().getFirst(TOKEN_HEAD);
+        if (token == null || CharSequenceUtil.isBlank(token)) {
+            return false;
+        }
+        // 进行逻辑判断
+        return true;
+    }
+
+    @Override
+    public void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
+        log.info("握手成功");
+    }
+}
+
+```
+<br>
+
+### 参数注入和参数校验
+#### 参数注入
+目前只支持单一参数加一个WebSocketSession回话对象的注入，单个参数支持String，Integer等基本数据类型和它们的包装类。对象参数使用json形式进行构建。
+
+单个参数形式
+```java
+ @SocketRequestMapping("/getValue")
+ public JsonResult<String> getValue(String name) {
+     System.out.println(name);
+     return JsonResult.success("ok");
+ }
+
+对应的客户端消息格式为：
+{
+    "url":"test/getValue",
+    "body":"测试"
+}
+```
+
+对象注入和回话对象注入
+```java
+ @SocketRequestMapping("/getInfo")
+ public JsonResult<String> getValue(TestVo testVo, WebSocketSession webSocketSession) {
+     System.out.println(testVo);
+     return JsonResult.success("ok");
+ }
+
+对应的客户端消息为
+
+{
+    "url":"test/getValue",
+    "body":{
+        "name":"ttt",
+        "age":18
+    }
+}
+```
+
+#### 参数校验
+
+参数校验接入spring的`validation`框架，使用和springMvc或者springboot一致即可。
+
+```java
+@SocketRequestMapping("/getInfo")
+public JsonResult<String> getInfo2(@Valid TestVo testVo, WebSocketSession webSocketSession) {
+    System.out.println(testVo);
+    return JsonResult.success("ok");
+}
+
+
+@Data
+public class TestVo {
+	
+    @NotBlank(message = "name不能为空")
+    private String name;
+
+    @NotNull(message = "age不能为空")
+    private Integer age;
+
+    private String msg;
+	
+}
+
+前端发送消息格式
+
+{
+    "url":"test/getValue",
+    "body":{
+        "name":"ttt",
+        "age":18
+    }
+}
+
+```
