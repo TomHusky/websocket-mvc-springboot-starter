@@ -1,5 +1,6 @@
 package io.github.tomhusky.websocket.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.tomhusky.websocket.enumerate.IocContainer;
 import io.github.tomhusky.websocket.exception.MethodParamsNotValidException;
 import org.springframework.core.convert.ConversionService;
@@ -22,6 +23,8 @@ import java.util.TreeMap;
  */
 public class RequestEntry {
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     private final Validator validator;
 
     private final ConversionService conversionService;
@@ -39,7 +42,7 @@ public class RequestEntry {
      * @param session websocket会话
      * @return java.util.Map<java.lang.String, java.lang.Object>
      */
-    public Map<String, Object> fillParam(Method method, String data, WebSocketSession session) throws MethodParamsNotValidException{
+    public Map<String, Object> fillParam(Method method, String data, WebSocketSession session) throws MethodParamsNotValidException {
         if (method == null) {
             return Collections.emptyMap();
         }
@@ -51,7 +54,7 @@ public class RequestEntry {
             if (paramType == WebSocketSession.class) {
                 bean = session;
             } else {
-                bean = FastJsonUtils.toObject(data, paramType);
+                bean = JacksonUtil.parseObject(data, paramType);
                 int size = paramNameValueMap.size() - 1;
                 if (size < 0) {
                     size = 0;
@@ -65,7 +68,7 @@ public class RequestEntry {
         return paramNameValueMap;
     }
 
-    protected void validateIfApplicable(Parameter parameter, Object bean, String paramName) throws MethodParamsNotValidException{
+    protected void validateIfApplicable(Parameter parameter, Object bean, String paramName) throws MethodParamsNotValidException {
         if (parameter == null) {
             return;
         }

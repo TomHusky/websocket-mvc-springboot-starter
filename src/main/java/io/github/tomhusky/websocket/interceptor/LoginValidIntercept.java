@@ -24,9 +24,8 @@ public abstract class LoginValidIntercept implements ValidIntercept {
     /**
      * 校验通过之后会调用该方法
      *
-     * @param serverHttpRequest
-     * @param serverHttpResponse
-     * @return void
+     * @param serverHttpRequest http请求
+     * @param serverHttpResponse http响应
      */
     @Override
     public abstract void successfulAuthentication(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse);

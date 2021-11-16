@@ -1,11 +1,11 @@
 package io.github.tomhusky.websocket.interceptor;
 
-import cn.hutool.core.text.CharSequenceUtil;
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
 import io.github.tomhusky.websocket.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
@@ -49,7 +49,7 @@ public final class SocketInterceptor extends HttpSessionHandshakeInterceptor {
         log.debug("准备握手!");
         if (Boolean.TRUE.equals(webSocketProperties.getEnableValid())) {
             String name = "Authorization";
-            if (CharSequenceUtil.isNotBlank(webSocketProperties.getTokenName())) {
+            if (!StringUtils.isEmpty(webSocketProperties.getTokenName())) {
                 name = webSocketProperties.getTokenName();
             }
             String token = serverHttpRequest.getHeaders().getFirst("Sec-WebSocket-Protocol");

@@ -5,7 +5,7 @@ import io.github.tomhusky.websocket.bean.SocketResult;
 import io.github.tomhusky.websocket.context.DefaultSessionDetail;
 import io.github.tomhusky.websocket.context.WebSocketContext;
 import io.github.tomhusky.websocket.context.WebSocketContextHolder;
-import io.github.tomhusky.websocket.util.FastJsonUtils;
+import io.github.tomhusky.websocket.util.JacksonUtil;
 import io.github.tomhusky.websocket.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.CloseStatus;
@@ -27,7 +27,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
     private CustomerWebSocketHandler customerWebSocketHandler;
 
     public SocketMsgHandler(DispatcherSocketMsg dispatcherSocketMsg) {
-        this.dispatcherSocketMsg =dispatcherSocketMsg;
+        this.dispatcherSocketMsg = dispatcherSocketMsg;
         try {
             this.customerWebSocketHandler = SpringContextHolder.getBean(CustomerWebSocketHandler.class);
         } catch (NullPointerException e) {
@@ -66,7 +66,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
         log.debug("来自客户端的消息:" + message);
         SocketRequest socketRequest;
         try {
-            socketRequest = FastJsonUtils.toObject(message.getPayload(), SocketRequest.class);
+            socketRequest = JacksonUtil.parseObject(message.getPayload(), SocketRequest.class);
             if (socketRequest == null) {
                 SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail("请求数据格式有误"));
                 return;
@@ -74,7 +74,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
             //消息分发到指定控制器
             dispatcherSocketMsg.dispatcher(socketRequest, session);
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error(e.getMessage(), e);
         } finally {
             // 上下文对象移除回话
             WebSocketContextHolder.clearContext();

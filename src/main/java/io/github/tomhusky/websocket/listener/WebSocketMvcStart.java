@@ -1,6 +1,5 @@
 package io.github.tomhusky.websocket.listener;
 
-import cn.hutool.core.util.StrUtil;
 import io.github.tomhusky.websocket.annotation.SocketController;
 import io.github.tomhusky.websocket.annotation.SocketRequestMapping;
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
@@ -10,6 +9,7 @@ import io.github.tomhusky.websocket.util.ClassUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
@@ -55,7 +55,7 @@ public class WebSocketMvcStart {
     private void initController() {
         //扫包
         String baseControllerPackage = properties.getBasePackage();
-        if (StrUtil.isBlank(baseControllerPackage)) {
+        if (StringUtils.isEmpty(baseControllerPackage)) {
             throw new ControllerInvalidException("请在配置文件中添加扫包范围");
         } else {
             List<Class<?>> classList = ClassUtil.getClasses(baseControllerPackage);
@@ -75,7 +75,7 @@ public class WebSocketMvcStart {
      * 处理器映射
      */
     private void handlerMapping() {
-        for (Map.Entry<String,Object> entry : IocContainer.OBJ_MAP.entrySet()) {
+        for (Map.Entry<String, Object> entry : IocContainer.OBJ_MAP.entrySet()) {
             Object controller = entry.getValue();
             String oneUrl = "/";
 
@@ -114,7 +114,10 @@ public class WebSocketMvcStart {
      */
     private void saveMethodParam(Method method) {
         Parameter[] parameters = method.getParameters();
-        if (parameters.length > 1 && parameters[0].getType() != WebSocketSession.class) {
+        if (parameters.length > 2) {
+            throw new ControllerInvalidException("requestMapping修饰的方法只能有一个非WebSocketSession类型参数");
+        }
+        if (parameters.length > 1 && (parameters[0].getType() != WebSocketSession.class && parameters[1].getType() != WebSocketSession.class)) {
             throw new ControllerInvalidException("requestMapping修饰的方法只能有一个非WebSocketSession类型参数");
         }
         Map<String, Class<?>> map = new HashMap<>(parameters.length);

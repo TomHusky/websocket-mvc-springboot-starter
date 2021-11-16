@@ -1,6 +1,6 @@
 package io.github.tomhusky.websocket;
 
-import io.github.tomhusky.websocket.util.FastJsonUtils;
+import io.github.tomhusky.websocket.util.JacksonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -87,7 +87,7 @@ public class SocketSessionManager {
         if (data != null) {
             try {
                 // json 序列化
-                sendData = FastJsonUtils.toString(data);
+                sendData = JacksonUtil.toJSONString(data);
             } catch (Exception e) {
                 log.error("json序列化异常，{}", e.getMessage());
                 return false;
