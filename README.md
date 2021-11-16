@@ -12,9 +12,9 @@
 
 <br>
 
-&emsp;github项目地址：[https://github.com/TomHusky/websocket-mvc-springboot-starter](https://github.com/TomHusky/websocket-mvc-springboot-starter)
+&emsp;Github项目地址：[https://github.com/TomHusky/websocket-mvc-springboot-starter](https://github.com/TomHusky/websocket-mvc-springboot-starter)
 
-&emsp;示例demo：...
+&emsp;示例demo：[http://github.com/TomHusky/websocket-mvc-springboot-starter-demo](http://github.com/TomHusky/websocket-mvc-springboot-starter-demo)
 
 ## 功能特性
 
@@ -22,6 +22,7 @@
 - [2] [消息接收格式和发送格式](#消息接收格式和发送格式)
 - [3] [拦截器](#拦截器)
 - [4] [参数注入和参数校验](#参数注入和参数校验)
+- [5] [服务端主动下发消息](#服务端主动下发消息)
   <br>
 
 ## 快速使用
@@ -67,7 +68,7 @@ web-socket-mvc:
 ```
 配置控制器所在的包路径，则在io.github.tomhusky.test.controller所有注解了`@SocketRequestMapping`的控制器都被扫描到。
 
-### 3.消息接收格式和发送格式
+### 消息接收格式和发送格式
 >框架严格控制消息传递的内容，如果格式不对，内容将无法正确的传输，所以这个是必须的！
 
 客户端发送消息的内容格式（服务端接收消息格式）
@@ -224,7 +225,7 @@ public class TokenValidIntercept extends LoginValidIntercept {
 对应的客户端消息为
 
 {
-    "url":"test/getValue",
+    "url":"test/getInfo",
     "body":{
         "name":"ttt",
         "age":18
@@ -237,7 +238,7 @@ public class TokenValidIntercept extends LoginValidIntercept {
 参数校验接入spring的`validation`框架，使用和springMvc或者springboot一致即可。
 
 ```java
-@SocketRequestMapping("/getInfo")
+@SocketRequestMapping("/getInfo2")
 public JsonResult<String> getInfo2(@Valid TestVo testVo, WebSocketSession webSocketSession) {
     System.out.println(testVo);
     return JsonResult.success("ok");
@@ -260,11 +261,127 @@ public class TestVo {
 前端发送消息格式
 
 {
-    "url":"test/getValue",
+    "url":"test/getInfo2",
     "body":{
         "name":"ttt",
         "age":18
     }
 }
 
+```
+
+### 服务端主动下发消息
+
+框架提供`SocketSessionManager` 工具类用于主动下发消息，不过需要开发者保存客户端对应的回话id，这样才能把消息发送给具体的客户端。案例如下
+
+在前面的拦截器里面我们可以通过实现`CustomerWebSocketHandler`接口来监听客户端的连接生命周期，那么在客户端连接成功时保存客户端的id，在客户端断开连接移除id即可
+
+案例采用ConcurrentHashMap保存用户的回话id，和token对应起来，真实开发可以解析用户的token保存用户的userid；
+
+```java
+@Slf4j
+public class OnlineUserManage {
+
+    private static final Map<String, String> WEB_SOCKET_SESSION_MAP = new ConcurrentHashMap<>();
+
+    private OnlineUserManage() {
+    }
+
+    public static Collection<String> getAll() {
+        return WEB_SOCKET_SESSION_MAP.values();
+    }
+
+    public static synchronized void add(String username, String sessionId) {
+        WEB_SOCKET_SESSION_MAP.computeIfAbsent(username, k -> sessionId);
+    }
+
+    public static String remove(String username) {
+        String sessionId = WEB_SOCKET_SESSION_MAP.get(username);
+        WEB_SOCKET_SESSION_MAP.remove(username);
+        return sessionId;
+    }
+
+    public static synchronized void removeAllSessionId(String sessionId) {
+        Collection<String> col = WEB_SOCKET_SESSION_MAP.values();
+        while (col.contains(sessionId)) {
+            col.remove(sessionId);
+        }
+    }
+
+    public static String get(String username) {
+        return WEB_SOCKET_SESSION_MAP.get(username);
+    }
+
+    public static boolean isOnline(String username) {
+        return WEB_SOCKET_SESSION_MAP.containsKey(username);
+    }
+
+    public static String getKey(String value) {
+        Set<Map.Entry<String, String>> entries = WEB_SOCKET_SESSION_MAP.entrySet();
+        for (Map.Entry<String, String> entry : entries) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public static <T> boolean sendMessages(String address, String username, T data) {
+        String sessionId = WEB_SOCKET_SESSION_MAP.get(username);
+        if (!StringUtils.isEmpty(sessionId)) {
+            return SocketSessionManager.sendMessages(sessionId, SocketResult.build(data, address));
+        }
+        return false;
+    }
+}
+```
+
+拦截器添加和删除客户端的回话id
+
+```java
+@Slf4j
+@Component
+public class WebSocketMsgHandler implements CustomerWebSocketHandler {
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession webSocketSession) {
+        log.info("------------连接成功:{}-------------", webSocketSession.getId());
+        String token = webSocketSession.getHandshakeHeaders().getFirst(TokenValidIntercept.TOKEN_HEAD);
+        OnlineUserManage.add(token, webSocketSession.getId());
+    }
+
+    @Override
+    public void handleMessage(WebSocketSession webSocketSession, TextMessage textMessage) {
+        log.info("------------收到消息:{}-------------", webSocketSession.getId());
+        log.info(textMessage.getPayload());
+    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) {
+        log.info("------------连接关闭{}-------------", webSocketSession.getId());
+        // 移除保存的客户端id
+        OnlineUserManage.removeAllSessionId(webSocketSession.getId());
+    }
+}
+```
+
+定时任务测试主动下发消息
+
+```java
+@Component
+@Slf4j
+public class TestActiveMsgJob {
+
+    @Scheduled(cron = "*/30 * * * * ?")
+    public void test() {
+        log.info("*************定时任务执行**************");
+        Collection<String> collection = OnlineUserManage.getAll();
+        for (String id : collection) {
+            SocketResult socketResult = SocketResult.build("/test/sendText");
+            socketResult.setType(SocketResponseType.INITIATIVE.getCode());
+            socketResult.setBody("定时消息："+UUID.randomUUID());
+            SocketSessionManager.sendMessages(id, socketResult);
+        }
+    }
+}
 ```
