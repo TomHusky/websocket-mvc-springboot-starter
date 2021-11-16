@@ -22,7 +22,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @Slf4j
 public final class SocketMsgHandler extends TextWebSocketHandler {
 
-    private DispatcherSocketMsg dispatcherSocketMsg;
+    private final DispatcherSocketMsg dispatcherSocketMsg;
 
     private CustomerWebSocketHandler customerWebSocketHandler;
 

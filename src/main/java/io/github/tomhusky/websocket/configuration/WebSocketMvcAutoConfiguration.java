@@ -6,22 +6,16 @@ import io.github.tomhusky.websocket.interceptor.SocketInterceptor;
 import io.github.tomhusky.websocket.listener.WebSocketMvcStart;
 import io.github.tomhusky.websocket.util.SpringContextHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.validation.ValidatorAdapter;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.support.FormattingConversionService;
-import org.springframework.util.ClassUtils;
 import org.springframework.validation.Validator;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 /**
  * <p> Websocket 自动配置加载类 <p/>

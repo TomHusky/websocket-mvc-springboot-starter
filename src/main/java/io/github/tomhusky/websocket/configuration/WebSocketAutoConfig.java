@@ -3,7 +3,6 @@ package io.github.tomhusky.websocket.configuration;
 import io.github.tomhusky.websocket.SocketMsgHandler;
 import io.github.tomhusky.websocket.interceptor.SocketInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
