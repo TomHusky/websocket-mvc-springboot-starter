@@ -1,8 +1,8 @@
-package io.github.tomhusky.websocket.util;
+package io.github.tomhusky.websocket;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.tomhusky.websocket.enumerate.IocContainer;
 import io.github.tomhusky.websocket.exception.MethodParamsNotValidException;
+import io.github.tomhusky.websocket.util.JacksonUtil;
+import io.github.tomhusky.websocket.util.ValidationAnnotationUtils;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
@@ -12,6 +12,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -22,8 +23,6 @@ import java.util.TreeMap;
  * @since 2021/8/27 15:01
  */
 public class RequestEntry {
-
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     private final Validator validator;
 
@@ -46,7 +45,7 @@ public class RequestEntry {
         if (method == null) {
             return Collections.emptyMap();
         }
-        Map<String, Object> paramNameValueMap = new TreeMap<>();
+        Map<String, Object> paramNameValueMap = new LinkedHashMap<>();
         for (Map.Entry<String, Class<?>> entry : IocContainer.METHOD_PARAM_MAP.get(method).entrySet()) {
             Class<?> paramType = entry.getValue();
             String paramName = entry.getKey();

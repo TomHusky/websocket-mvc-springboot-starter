@@ -78,7 +78,7 @@ public final class SocketInterceptor extends HttpSessionHandshakeInterceptor {
         }
     }
 
-    protected LoginValidIntercept getLoginValidIntercept() {
+    private LoginValidIntercept getLoginValidIntercept() {
         if (this.loginValidIntercept == null) {
             this.loginValidIntercept = SpringContextHolder.getBean(LoginValidIntercept.class);
         }

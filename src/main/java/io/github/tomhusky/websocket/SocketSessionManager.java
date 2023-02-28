@@ -23,10 +23,12 @@ public class SocketSessionManager {
     }
 
     /**
-     * websocket 会话池
+     * websocket 本地会话池
      * 如果想长期存在会话池，可以使用  Map<String, WebSocketSession>  来存储
      */
     private static final Map<String, WebSocketSession> WEB_SOCKET_SESSION_MAP = new ConcurrentHashMap<>();
+
+
 
     /**
      * 添加 websocket 会话
@@ -77,12 +79,23 @@ public class SocketSessionManager {
     }
 
     /**
+     * 是否存在 websocket 会话
+     *
+     * @param key key
+     * @return org.springframework.web.socket.WebSocketSession
+     */
+    public static boolean exit(String key) {
+        return WEB_SOCKET_SESSION_MAP.containsKey(key);
+    }
+
+    /**
      * 发送消息
      *
      * @param key  自定义 key
      * @param data 数据
      */
-    public static <T> boolean sendMessages(String key, T data) {
+    protected static <T> boolean sendMessages(String key, T data) {
+
         String sendData = "";
         if (data != null) {
             try {

@@ -1,6 +1,8 @@
 package io.github.tomhusky.websocket.configuration;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -34,4 +36,29 @@ public class WebSocketProperties {
      * 登录验证接口
      */
     private String loginPath;
+
+    /**
+     * 集群模式
+     */
+    private Cluster cluster = Cluster.DEFAULT;
+
+    /**
+     * 集群模式配置
+     */
+    @Getter
+    @Setter
+    public static class Cluster {
+
+        public static final Cluster DEFAULT = new Cluster();
+
+        /**
+         * 开启集群模式
+         */
+        private Boolean enable = false;
+
+        /**
+         * 订阅的topic 默认websocket-msg
+         */
+        private String topic = "websocket-msg";
+    }
 }

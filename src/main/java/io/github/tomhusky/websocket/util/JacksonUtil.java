@@ -53,17 +53,10 @@ public class JacksonUtil {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 // 设置在遇到未知属性的时候不抛出异常
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                // 强制JSON 空字符串("")转换为null对象值
-                .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT)
+                .disable(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE)
                 .enable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
                 // 设置数字丢失精度问题
                 .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
-                // 设置没有引号的字段名
-                .enable(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES)
-                // 设置允许单引号
-                .enable(JsonParser.Feature.ALLOW_SINGLE_QUOTES)
-                // 排序
-                .enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
                 .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true)
                 // 设置接受只有一个元素的数组的反序列化
                 .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);

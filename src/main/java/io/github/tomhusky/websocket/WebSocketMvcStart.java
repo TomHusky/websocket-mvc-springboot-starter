@@ -1,9 +1,9 @@
-package io.github.tomhusky.websocket.listener;
+package io.github.tomhusky.websocket;
 
 import io.github.tomhusky.websocket.annotation.SocketController;
 import io.github.tomhusky.websocket.annotation.SocketRequestMapping;
 import io.github.tomhusky.websocket.configuration.WebSocketProperties;
-import io.github.tomhusky.websocket.enumerate.IocContainer;
+import io.github.tomhusky.websocket.IocContainer;
 import io.github.tomhusky.websocket.exception.ControllerInvalidException;
 import io.github.tomhusky.websocket.util.ClassUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,11 @@ public class WebSocketMvcStart {
             initController();
             //3.初始化映射器
             handlerMapping();
-            System.out.println("========================WebSocket-【MVC】========================");
+            log.info("================================================================/r" +
+                    "================================================================/r" +
+                    "========================WebSocket-【MVC】========================/r" +
+                    "================================================================/r" +
+                    "================================================================");
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -120,7 +125,7 @@ public class WebSocketMvcStart {
         if (parameters.length > 1 && (parameters[0].getType() != WebSocketSession.class && parameters[1].getType() != WebSocketSession.class)) {
             throw new ControllerInvalidException("requestMapping修饰的方法只能有一个非WebSocketSession类型参数");
         }
-        Map<String, Class<?>> map = new HashMap<>(parameters.length);
+        Map<String, Class<?>> map = new LinkedHashMap<>(parameters.length);
         for (Parameter parameter : parameters) {
             map.put(parameter.getName(), parameter.getType());
         }

@@ -26,6 +26,7 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
 
     private CustomerWebSocketHandler customerWebSocketHandler;
 
+
     public SocketMsgHandler(DispatcherSocketMsg dispatcherSocketMsg) {
         this.dispatcherSocketMsg = dispatcherSocketMsg;
         try {
@@ -68,11 +69,12 @@ public final class SocketMsgHandler extends TextWebSocketHandler {
         try {
             socketRequest = JacksonUtil.parseObject(message.getPayload(), SocketRequest.class);
             if (socketRequest == null) {
+                log.error("请求数据格式有误");
                 SocketSessionManager.sendMessages(session.getId(), SocketResult.build("").fail("请求数据格式有误"));
                 return;
             }
             //消息分发到指定控制器
-            dispatcherSocketMsg.dispatcher(socketRequest, session);
+            dispatcherSocketMsg.dispatcher(socketRequest, session.getId());
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {

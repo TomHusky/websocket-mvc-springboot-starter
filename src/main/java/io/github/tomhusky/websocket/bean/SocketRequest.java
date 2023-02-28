@@ -1,5 +1,7 @@
 package io.github.tomhusky.websocket.bean;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.github.tomhusky.websocket.annotation.ContentSerializer;
 import lombok.Data;
 
 /**
@@ -19,6 +21,7 @@ public class SocketRequest {
     /**
      * 请求数据
      */
+    @JsonDeserialize(using = ContentSerializer.class)
     private String body;
 
 }
